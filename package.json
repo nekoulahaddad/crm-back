@@ -1,0 +1,41 @@
+{
+  "name": "admin_zumzak",
+  "version": "1.0.0",
+  "description": "admin for zumzak project",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "mocha *.test.js",
+    "server": "nodemon ./server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RoboWebTeam/Admin.ZumZak.git"
+  },
+  "author": "Nekoula Haddad",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/RoboWebTeam/Admin.ZumZak/issues"
+  },
+  "homepage": "https://github.com/RoboWebTeam/Admin.ZumZak#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "concurrently": "^7.0.0",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "fuse.js": "^6.5.3",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.2.6",
+    "nodemailer": "^6.7.2",
+    "nodemon": "^2.0.15",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "chai": "^4.3.6",
+    "mocha": "^9.2.2",
+    "request": "^2.88.2",
+    "supertest": "^6.2.2"
+  }
+}
