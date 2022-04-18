@@ -14,7 +14,7 @@ const userSchema = new Schema(
     roles: { type: Array, required: false, default: ["user"] },
     accessToken: { type: String, required: true },
     refreshToken: { type: String, required: true },
-    region: { type: Types.ObjectId },
+    region: { type: Types.ObjectId, ref: 'region' },
     shop_id: { type: Types.ObjectId },
   },
   {
