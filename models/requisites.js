@@ -10,10 +10,7 @@ const requisitesSchema = new Schema(
     tax: { type: String, required: true },
     BIK: { type: String, required: true },
     bankName: { type: String, required: true },
-    checkingAccount: { type: String, required: true },
-  },
-  {
-    timestamps: true,
+    checkingAccount: { type: String, required: true }
   }
 )
 

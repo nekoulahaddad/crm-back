@@ -5,10 +5,7 @@ const regionSchema = new Schema(
   {
     country_id: { type: Types.ObjectId, ref: 'country' },
     city_id: { type: Types.ObjectId, ref: 'city' },
-    address: { type: String, required: true },
-  },
-  {
-    timestamps: true,
+    address: { type: String, required: true }
   }
 );
 

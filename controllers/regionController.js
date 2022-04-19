@@ -1,6 +1,4 @@
-import { Region } from "../models/location/region.js";
-import { Country } from "../models/location/country.js";
-import { City } from "../models/location/city.js";
+
 import { countries } from "../data/countries.js";
 import mongoose from "mongoose";
 const { Types } = mongoose;

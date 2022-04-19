@@ -4,9 +4,9 @@ const { Schema, Types, model } = mongoose;
 const categorySchema = new Schema(
   {
     title: { type: String, required: true },
-    images: { type: String, required: true },
+    images: { type: Array, required: true },
     slug: { type: String, required: true },
-    visible: { type: String, required: true },
+    visible: { type: Boolean, required: true, default:true },
     parent_id: { type: Types.ObjectId, required: true },
     seo: { type: Types.ObjectId, ref: 'seo' },
     banners: [{

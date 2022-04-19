@@ -8,10 +8,7 @@ const countrySchema = new Schema(
     translations: {
       ru: { type: String },
       en: { type: String },
-    },
-  },
-  {
-    timestamps: true,
+    }
   }
 );
 

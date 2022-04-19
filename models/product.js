@@ -13,7 +13,7 @@ const productSchema = new Schema(
     images: [{ type: String }],
     category_id: { type: Types.ObjectId, ref: 'category' },
     mainCategory: { type: Types.ObjectId, ref: 'mainCategory' },
-    visible: { type: Boolean, required: true },
+    visible: { type: Boolean, required: true, default:true },
     unit: { type: String, required: true },
     description: { type: String, required: true },
     seo: { type: Types.ObjectId, ref: 'seo' },

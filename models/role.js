@@ -3,10 +3,7 @@ const { Schema, model } = mongoose;
 
 const roleSchema = new Schema(
   {
-    value: { type: String, required: true },
-  },
-  {
-    timestamps: true,
+    value: { type: String, required: true }
   }
 );
 

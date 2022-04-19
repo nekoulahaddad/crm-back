@@ -5,10 +5,7 @@ const seoSchema = new Schema(
   {
     title: { type: String, required: true },
     description: { type: String, required: true },
-    keywords: [{ type: String, required: true }],
-  },
-  {
-    timestamps: true,
+    keywords: [{ type: String, required: true }]
   }
 );
 

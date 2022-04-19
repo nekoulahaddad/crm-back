@@ -1,8 +1,6 @@
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { Admin } from "../models/admin/admin.js";
-import { AdminJWT } from "../models/admin/jwt.js";
-import { AdminPWD } from "../models/admin/password.js";
+import { User } from "../models/user.js";
 
 export const addAdmin = async (req, res) => {
   try {

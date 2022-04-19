@@ -1,7 +1,4 @@
-import { Customer } from "../models/customers/customer.js";
 import { clientsData } from "../data/clients.js";
-import { Counter } from "../models/counter/counter.js";
-import Fuse from "fuse.js";
 
 export const insertClients = async (req, res) => {
   try {

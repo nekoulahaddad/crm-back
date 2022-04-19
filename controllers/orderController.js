@@ -1,9 +1,4 @@
-import { Order } from "../models/order/order.js";
-import { Shop } from "../models/shop/shop.js";
-import { OrderStatus } from "../models/order/status.js";
-import { Region } from "../models/location/region.js";
-import { ordersData } from "../data/orders.js";
-import { Counter } from "../models/counter/counter.js";
+
 
 export const insertOrders = async (req, res) => {
   try {
