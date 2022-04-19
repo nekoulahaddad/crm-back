@@ -13,7 +13,7 @@ const __dirname = path.resolve();
 const app = express();
 const db = config.MONGO_URI || 'mongodb://localhost:27017/zumzak';
 
-app.use(express.json());git
+app.use(express.json());
 app.use(cookieParser());
 
 mongoose
