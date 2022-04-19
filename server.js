@@ -11,11 +11,9 @@ import path from "path";
 import config from "./config/index.js";
 const __dirname = path.resolve();
 const app = express();
-const db = config.MONGO_URI || 'mongodb://localhost:27017/zumzak';
-
+const db = config.MONGO_URI;
 app.use(express.json());
 app.use(cookieParser());
-
 mongoose
   .connect(db)
   .then(() => console.log("the database is ready to use ..."))
@@ -27,17 +25,10 @@ app.use("/api/client", clientRoutes);
 app.use("/api/order", orderRoutes);
 app.use("/api/region", regionRoutes);
 
-/* production
-app.use(express.static("frontend/build"));
-app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
-});
-*/
-
 const port = process.env.PORT || 5000;
 
 app.listen(port, () => {
-  console.log(`every thing is ok ...${port} ${process.env.NODE_ENV}`);
+  console.log(`everything is ok ...${port} ${process.env.NODE_ENV}`);
 });
 
 export const server = app;
