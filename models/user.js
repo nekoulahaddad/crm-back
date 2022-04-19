@@ -15,7 +15,7 @@ const userSchema = new Schema(
     accessToken: { type: String, required: true },
     refreshToken: { type: String, required: true },
     region: { type: Types.ObjectId, ref: 'region' },
-    shop_id: { type: Types.ObjectId },
+    shop_id: { type: Types.ObjectId, ref: 'shop' },
   },
   {
     timestamps: true,
