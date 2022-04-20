@@ -7,25 +7,31 @@ const shopSchema = new Schema(
     subDomain: { type: String, required: true },
     domain: { type: String, required: true },
     description: { type: String, required: true },
-    seo: { type: Types.ObjectId, ref: 'seo' },
-    mainCategory: { type: Types.ObjectId, ref: 'mainCategory' },
+    seo: { type: Types.ObjectId, ref: "seo" },
+    mainCategory: { type: Types.ObjectId, ref: "mainCategory" },
+    translations: {
+      en: {
+        name: { type: String, required: false },
+        description: { type: String, required: false },
+      },
+    },
     displayID: { type: String, required: true },
     rating: [
       {
         client: { type: Types.ObjectId, required: true },
         score: { type: Number, required: true },
-      }
+      },
     ],
     workingHours: [{ type: String, required: true }],
     phone: { type: String, required: true },
     logo: { type: String, required: true },
-    region: { type: Types.ObjectId, ref: 'region', required: true },
+    region: { type: Types.ObjectId, ref: "region", required: true },
     favicon: { type: String, required: true },
-    tariffs: [{ type: Types.ObjectId, ref: 'tariffs', required: true }],
+    tariffs: [{ type: Types.ObjectId, ref: "tariffs", required: true }],
   },
   {
     timestamps: true,
   }
 );
 
-export const Shop = model('Shop', shopSchema);
+export const Shop = model("Shop", shopSchema);
