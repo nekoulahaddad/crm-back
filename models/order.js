@@ -4,14 +4,16 @@ const { Schema, Types, model } = mongoose;
 const orderSchema = new Schema(
   {
     displayID: { type: String, required: true },
-    statusOrder: { type: Types.ObjectId, ref: 'statusOrder' },
-    products: [{
-      product: { type: Types.ObjectId, ref: 'product' },
-      price: { type: Number, required: true },
-      quantity: { type: String, required: true },
-    }],
-    client: { type: Types.ObjectId, ref: 'user' },
-    region: { type: Types.ObjectId, ref: 'region' },
+    statusOrder: { type: Types.ObjectId, ref: "statusOrder", required: true },
+    products: [
+      {
+        product: { type: Types.ObjectId, ref: "product" },
+        price: { type: Number, required: true },
+        quantity: { type: String, required: true },
+      },
+    ],
+    client: { type: Types.ObjectId, ref: "user" },
+    region: { type: Types.ObjectId, ref: "region" },
     paidAt: { type: Date, required: true },
     sum: { type: Number, required: true },
     deliveredAt: { type: Date, required: true },
@@ -26,4 +28,4 @@ const orderSchema = new Schema(
   }
 );
 
-export const Order = model('Order', orderSchema);
+export const Order = model("Order", orderSchema);

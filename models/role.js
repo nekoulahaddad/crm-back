@@ -3,9 +3,9 @@ const { Schema, model } = mongoose;
 
 const roleSchema = new Schema({
   value: { type: String, required: true, unique: true },
+  title: { type: String, required: true },
   translations: {
-    ru: { type: String, required: true },
-    en: { type: String, required: true },
+    en: { title: { type: String, required: false } },
   },
 });
 

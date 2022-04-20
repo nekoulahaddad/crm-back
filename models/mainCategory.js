@@ -4,10 +4,9 @@ const { Schema, model } = mongoose;
 const mainCategorySchema = new Schema(
   {
     title: { type: String, required: true },
-    visible: { type: Boolean, required: true, default:true },
+    visible: { type: Boolean, required: true, default: true },
     translations: {
-      ru: { type: String, required: true },
-      en: { type: String, required: true },
+      en: { title: { type: String, required: false } },
     },
   },
   {
@@ -15,4 +14,4 @@ const mainCategorySchema = new Schema(
   }
 );
 
-export const MainCategory = model('MainCategory', mainCategorySchema)
+export const MainCategory = model("MainCategory", mainCategorySchema);

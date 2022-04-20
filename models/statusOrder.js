@@ -4,9 +4,9 @@ const { Schema, model } = mongoose;
 const statusOrderSchema = new Schema(
   {
     value: { type: String, required: true },
+    title: { type: String, required: true },
     translations: {
-      ru: { type: String, required: true },
-      en: { type: String, required: true },
+      en: { title: { type: String, required: false } },
     },
   },
   {
@@ -14,4 +14,4 @@ const statusOrderSchema = new Schema(
   }
 );
 
-export const StatusOrder = model('StatusOrder', statusOrderSchema);
+export const StatusOrder = model("StatusOrder", statusOrderSchema);
