@@ -6,7 +6,9 @@ const statusOrderSchema = new Schema(
     value: { type: String, required: true },
     title: { type: String, required: true },
     translations: {
-      en: { title: { type: String, required: false } },
+      en: {
+        title: { type: String, required: false },
+      },
     },
   },
   {
