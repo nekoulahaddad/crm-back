@@ -4,10 +4,14 @@ const { Schema, Types, model } = mongoose;
 const shopSchema = new Schema(
   {
     name: { type: String, required: true },
-    subDomain: { type: String, required: true },
-    domain: { type: String, required: true },
+    subDomain: { type: String, required: false, unique: true },
+    domain: { type: String, required: false },
     description: { type: String, required: true },
-    seo: { type: Types.ObjectId, ref: "seo" },
+    seo: {
+      title: { type: String, required: false },
+      keywords: { type: String, required: false },
+      description: { type: String, required: false },
+    },
     mainCategory: { type: Types.ObjectId, ref: "mainCategory" },
     translations: {
       en: {

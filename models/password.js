@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 const { Schema, Types, model } = mongoose;
-
+import bcryptjs from "bcryptjs";
 const passwordSchema = new Schema(
   {
-    admin_id: { type: Types.ObjectId, ref: 'user' },
+    user_id: { type: Types.ObjectId, ref: "user" },
     password: { type: String, required: true },
     email: { type: String, required: true },
   },
@@ -12,4 +12,12 @@ const passwordSchema = new Schema(
   }
 );
 
-export const Password = model('Password', passwordSchema);
+passwordSchema.pre("save", async function (next) {
+  const userPassword = this;
+  if (userPassword.isModified("password")) {
+    userPassword.password = await bcryptjs.hash(userPassword.password, 12);
+  }
+  next();
+});
+
+export const Password = model("Password", passwordSchema);
