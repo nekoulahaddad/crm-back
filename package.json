@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "admin for zumzak project",
   "main": "server.js",
-  "type": "module",
+  "module": "main.js",
   "scripts": {
     "test": "mocha *.test.js",
-    "server": "nodemon ./server.js"
+    "server": "nodemon ./server.js",
+    "start": "nodemon -r esm server.js"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,7 @@
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^14.2.0",
+    "esm": "^3.2.25",
     "express": "^4.17.3",
     "fuse.js": "^6.5.3",
     "jsonwebtoken": "^8.5.1",

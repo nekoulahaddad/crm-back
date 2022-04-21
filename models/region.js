@@ -1,12 +1,11 @@
 import mongoose from "mongoose";
 const { Schema, Types, model } = mongoose;
 
-const regionSchema = new Schema(
-  {
-    country_id: { type: Types.ObjectId, ref: 'country' },
-    city_id: { type: Types.ObjectId, ref: 'city' },
-    address: { type: String, required: true }
-  }
-);
+const regionSchema = new Schema({
+  name: { type: String, required: true },
+  translations: {
+    en: { name: { type: String, required: false } },
+  },
+});
 
-export const Region = model('Region', regionSchema);
+export const Region = model("Region", regionSchema);

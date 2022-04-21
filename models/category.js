@@ -7,8 +7,13 @@ const categorySchema = new Schema(
     images: { type: Array, required: true },
     slug: { type: String, required: true },
     visible: { type: Boolean, required: true, default: true },
+    pending: { type: Boolean, required: true, default: true },
     parent_id: { type: Types.ObjectId, required: true },
-    seo: { type: Types.ObjectId, ref: "seo" },
+    seo: {
+      title: { type: String, required: false },
+      keywords: { type: String, required: false },
+      description: { type: String, required: false },
+    },
     translations: {
       en: { title: { type: String, required: false } },
     },
