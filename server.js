@@ -6,6 +6,7 @@ import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import regionRoutes from "./routes/regionRoutes.js";
+import categoryRoutes from "./routes/categoryRoutes";
 
 import path from "path";
 import config from "./config/index.js";
@@ -24,6 +25,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/order", orderRoutes);
 app.use("/api/region", regionRoutes);
+app.use("/api/category", categoryRoutes);
 
 const port = process.env.PORT || 5000;
 
