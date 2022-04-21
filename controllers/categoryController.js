@@ -106,3 +106,37 @@ export const changeSeo = async (req, res) => {
     })
   }
 };
+
+export const clearSeo = async (req, res) => {
+  const { id } = req.params
+
+  try {
+    const categoryForChange = await Category.findById(id)
+    if (!categoryForChange) return res.send({ message: "Такой категории не существует!" })
+
+    await Category.findByIdAndUpdate(
+      id,
+      { $set: {
+          seo: {
+            title: "",
+            keywords:"",
+            description: "",
+          }
+        }
+      }
+    )
+      .then(() => res.send({ message: "Seo cleared!" }))
+      .catch(err => res.status(500).send({ message: 'Произошла ошибка!' }))
+
+  } catch (error) {
+    console.log(error.name)
+    console.log(error.message)
+
+    res.send({
+      error: {
+        name: error.name,
+        message: error.message
+      }
+    })
+  }
+};
