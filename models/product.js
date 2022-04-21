@@ -18,7 +18,11 @@ const productSchema = new Schema(
     visible: { type: Boolean, required: true, default: true },
     unit: { type: String, required: true },
     description: { type: String, required: true },
-    seo: { type: Types.ObjectId, ref: "seo" },
+    seo: {
+      title: { type: String, required: false },
+      keywords: { type: String, required: false },
+      description: { type: String, required: false },
+    },
     modifications: { type: Array, default: undefined },
     price: { type: Number, required: true },
     discountPrice: { type: Number, required: true },

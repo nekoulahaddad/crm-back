@@ -3,9 +3,10 @@ import mongoose from "mongoose";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/authRoutes.js";
-import clientRoutes from "./routes/clientRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import regionRoutes from "./routes/regionRoutes.js";
+import categoryRoutes from "./routes/categoryRoutes";
 
 import path from "path";
 import config from "./config/index.js";
@@ -20,10 +21,11 @@ mongoose
   .catch((err) => console.log(err));
 
 app.use(cors({ credentials: true, origin: "http://localhost:3030" }));
-app.use("/api/admin", authRoutes);
-app.use("/api/client", clientRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
 app.use("/api/order", orderRoutes);
 app.use("/api/region", regionRoutes);
+app.use("/api/category", categoryRoutes);
 
 const port = process.env.PORT || 5000;
 
