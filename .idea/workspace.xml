@@ -1,9 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="471edf35-7c5e-4ee5-9a60-08600c1bb92d" name="Default Changelist" comment="">
+    <list default="true" id="29895ff0-ac2b-4405-b158-74f1e66c3399" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/user.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/categoryController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/categoryController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/mainCategoryController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/mainCategoryController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/questionAnswerController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/questionAnswerController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/statusOrderController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/statusOrderController.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,18 +49,54 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="471edf35-7c5e-4ee5-9a60-08600c1bb92d" name="Default Changelist" comment="" />
+      <changelist id="29895ff0-ac2b-4405-b158-74f1e66c3399" name="Default Changelist" comment="" />
       <created>1650265479185</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1650265479185</updated>
       <workItem from="1650265481108" duration="8072000" />
       <workItem from="1650286822558" duration="6376000" />
-      <workItem from="1650349654129" duration="7054000" />
+      <workItem from="1650349654129" duration="8402000" />
+      <workItem from="1650369842258" duration="41000" />
+      <workItem from="1650370116871" duration="169000" />
+      <workItem from="1650379218740" duration="1912000" />
+      <workItem from="1650434774945" duration="2661000" />
+      <workItem from="1650442626251" duration="170000" />
+      <workItem from="1650445013194" duration="438000" />
+      <workItem from="1650607310467" duration="6123000" />
+      <workItem from="1650617742029" duration="1358000" />
+      <workItem from="1650620065907" duration="3331000" />
+      <workItem from="1650628731115" duration="184000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="1010" y="447" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1650379237480">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="1010" y="447" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1650379237480" />
+    <state x="248" y="122" key="MergeDialog" timestamp="1650528120207">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="248" y="122" key="MergeDialog/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1650528120207" />
+    <state x="918" y="461" key="MultipleFileMergeDialog" timestamp="1650528120213">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="918" y="461" key="MultipleFileMergeDialog/0.0.2560.1400/2560.0.1920.1040@0.0.2560.1400" timestamp="1650528120213" />
   </component>
 </project>
