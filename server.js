@@ -2,13 +2,16 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import authRoutes from "./routes/authRoutes.js";
-import userRoutes from "./routes/userRoutes.js";
-import orderRoutes from "./routes/orderRoutes.js";
-import regionRoutes from "./routes/regionRoutes.js";
+import authRoutes from "./routes/authRoutes";
+import userRoutes from "./routes/userRoutes";
+import orderRoutes from "./routes/orderRoutes";
+import regionRoutes from "./routes/regionRoutes";
+import shopRoutes from "./routes/shopRoutes";
+import productRoutes from "./routes/productRoutes";
 
 import path from "path";
-import config from "./config/index.js";
+import config from "./config/index";
+
 const __dirname = path.resolve();
 const app = express();
 const db = config.MONGO_URI;
@@ -24,6 +27,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/order", orderRoutes);
 app.use("/api/region", regionRoutes);
+app.use("/api/shop", shopRoutes);
+app.use("/api/product", productRoutes);
 
 const port = process.env.PORT || 5000;
 

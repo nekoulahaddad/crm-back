@@ -8,7 +8,8 @@ const categorySchema = new Schema(
     slug: { type: String, required: true },
     visible: { type: Boolean, required: true, default: true },
     pending: { type: Boolean, required: true, default: true },
-    parent_id: { type: Types.ObjectId, required: true },
+    parent_id: { type: Types.ObjectId, required: false },
+    mainCategory: { type: Types.ObjectId, ref: "mainCategory", required: true },
     seo: {
       title: { type: String, required: false },
       keywords: { type: String, required: false },
