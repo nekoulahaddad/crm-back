@@ -18,7 +18,7 @@ export const addCategory = async (req, res) => {
   }
 
   try {
-    await Category.create({
+    const newCategory = await Category.create({
       title,
       images,
       slug,
@@ -29,15 +29,16 @@ export const addCategory = async (req, res) => {
       translations: emptyTranslations ? defaultTranslations : translations,
       banners
     })
-      .then(newCategory => res.send({ newCategory }))
-      .catch(err => res.status(500).send({ message: err.message }))
-
-  } catch (error) {
-    console.log(error.name)
-    console.log(error.message)
 
     res.send({
+      status: "ok",
+      data: newCategory
+    })
+
+  } catch (error) {
+    res.status(500).send({
       error: {
+        status: "error",
         name: error.name,
         message: error.message
       }
@@ -51,18 +52,17 @@ export const deleteCategory = async (req, res) => {
   try {
     const categoryForDelete = await Category.findById(id)
 
-    if (!categoryForDelete) return res.send({ message: "Такой категории не существует!" })
+    if (!categoryForDelete) return res.send({ status: "error", message: "Такой категории не существует!" })
 
     await Category.findByIdAndRemove(id)
-      .then(() => res.send({ message: "Категория удалена!" }))
-      .catch(err => res.status(500).send({ message: 'Произошла ошибка!' }))
-
-  } catch (error) {
-    console.log(error.name)
-    console.log(error.message)
-
     res.send({
+      status: "ok",
+      message: "Категория удалена!"
+    })
+  } catch (error) {
+    res.status(500).send({
       error: {
+        status: "error",
         name: error.name,
         message: error.message
       }
@@ -76,9 +76,7 @@ export const changeSeo = async (req, res) => {
 
   try {
     const categoryForChange = await Category.findById(id)
-    if (!categoryForChange) return res.send({ message: "Такой категории не существует!" })
-
-    console.log(req.body)
+    if (!categoryForChange) return res.send({ status: "error", message: "Такой категории не существует!" })
 
     await Category.findByIdAndUpdate(
       id,
@@ -92,14 +90,15 @@ export const changeSeo = async (req, res) => {
       }
     )
 
-    const catForSend = await Category.findById(id)
-    res.send({ category: catForSend })
-  } catch (error) {
-    console.log(error.name)
-    console.log(error.message)
-
+    const categoryForSend = await Category.findById(id)
     res.send({
+      status: "ok",
+      data: categoryForSend
+    })
+  } catch (error) {
+    res.status(500).send({
       error: {
+        status: "error",
         name: error.name,
         message: error.message
       }
@@ -112,7 +111,7 @@ export const clearSeo = async (req, res) => {
 
   try {
     const categoryForChange = await Category.findById(id)
-    if (!categoryForChange) return res.send({ message: "Такой категории не существует!" })
+    if (!categoryForChange) return res.send({ status: "error", message: "Такой категории не существует!" })
 
     await Category.findByIdAndUpdate(
       id,
@@ -125,15 +124,16 @@ export const clearSeo = async (req, res) => {
         }
       }
     )
-      .then(() => res.send({ message: "Seo cleared!" }))
-      .catch(err => res.status(500).send({ message: 'Произошла ошибка!' }))
-
-  } catch (error) {
-    console.log(error.name)
-    console.log(error.message)
 
     res.send({
+      status: "ok",
+      message: "Seo cleared!"
+    })
+
+  } catch (error) {
+    res.status(500).send({
       error: {
+        status: "error",
         name: error.name,
         message: error.message
       }

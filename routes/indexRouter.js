@@ -7,6 +7,7 @@ import regionRoutes from "../routes/regionRoutes.js";
 import mainCategoryRoutes from "../routes/mainCategoryRoutes";
 import categoryRoutes from "../routes/categoryRoutes";
 import statusOrderRoutes from "../routes/statusOrderRoutes";
+import questionAnswer from "../routes/questionAnswerRoutes";
 
 router.use("/api/auth", authRoutes)
 router.use("/api/user", userRoutes)
@@ -15,5 +16,6 @@ router.use("/api/region", regionRoutes)
 router.use('/api/mainCategory', mainCategoryRoutes)
 router.use("/api/category", categoryRoutes)
 router.use("/api/statusOrder/", statusOrderRoutes)
+router.use("/api/questionAnswer/", questionAnswer)
 
 export default router;

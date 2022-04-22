@@ -4,7 +4,7 @@ export const addStatus = async (req, res) => {
   const { value, title, translations } = req.body
   try {
     const existingStatus = await StatusOrder.findOne({ value })
-    if (existingStatus) return res.status(500)({ message: "Статус уже существует!" })
+    if (existingStatus) return res.send({ status: "error", message: "Статус уже существует!" })
 
     const newStatus = await StatusOrder.create({
       value,
@@ -17,10 +17,8 @@ export const addStatus = async (req, res) => {
       data: newStatus,
     });
   } catch (error) {
-    console.log(error.name)
-    console.log(error.message)
-
-    res.send({
+    res.status(500).send({
+      status: "error",
       error: {
         name: error.name,
         message: error.message
