@@ -11,8 +11,8 @@ export const addQuestion = async (req, res) => {
     })
   } catch (error) {
     res.status(500).send({
+      status: "error",
       error: {
-        status: "error",
         name: error.name,
         message: error.message
       }

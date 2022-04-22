@@ -5,7 +5,7 @@ export const addMainCategory = async (req, res) => {
 
   try {
     const existingCategory = await MainCategory.findOne({ title })
-    if (existingCategory) return res.send({ status: "error", message: "Категория уже существует!" })
+    if (existingCategory) return res.status(500).send({ status: "error", message: "Категория уже существует!" })
 
     const newCategory = await MainCategory.create({ title, visible, translations })
     res.status(200).send({

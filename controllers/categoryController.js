@@ -37,8 +37,8 @@ export const addCategory = async (req, res) => {
 
   } catch (error) {
     res.status(500).send({
-      error: {
-        status: "error",
+      status: "error",
+      message: {
         name: error.name,
         message: error.message
       }
@@ -51,8 +51,7 @@ export const deleteCategory = async (req, res) => {
 
   try {
     const categoryForDelete = await Category.findById(id)
-
-    if (!categoryForDelete) return res.send({ status: "error", message: "Такой категории не существует!" })
+    if (!categoryForDelete) return res.status(500).send({ status: "error", message: "Такой категории не существует!" })
 
     await Category.findByIdAndRemove(id)
     res.send({
@@ -61,8 +60,8 @@ export const deleteCategory = async (req, res) => {
     })
   } catch (error) {
     res.status(500).send({
-      error: {
-        status: "error",
+      status: "error",
+      message: {
         name: error.name,
         message: error.message
       }
@@ -76,7 +75,7 @@ export const changeSeo = async (req, res) => {
 
   try {
     const categoryForChange = await Category.findById(id)
-    if (!categoryForChange) return res.send({ status: "error", message: "Такой категории не существует!" })
+    if (!categoryForChange) return res.status(500).send({ status: "error", message: "Такой категории не существует!" })
 
     await Category.findByIdAndUpdate(
       id,
@@ -97,8 +96,8 @@ export const changeSeo = async (req, res) => {
     })
   } catch (error) {
     res.status(500).send({
-      error: {
-        status: "error",
+      status: "error",
+      message: {
         name: error.name,
         message: error.message
       }
@@ -111,7 +110,7 @@ export const clearSeo = async (req, res) => {
 
   try {
     const categoryForChange = await Category.findById(id)
-    if (!categoryForChange) return res.send({ status: "error", message: "Такой категории не существует!" })
+    if (!categoryForChange) return res.status(500).send({ status: "error", message: "Такой категории не существует!" })
 
     await Category.findByIdAndUpdate(
       id,
@@ -132,8 +131,8 @@ export const clearSeo = async (req, res) => {
 
   } catch (error) {
     res.status(500).send({
-      error: {
-        status: "error",
+      status: "error",
+      message: {
         name: error.name,
         message: error.message
       }

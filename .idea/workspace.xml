@@ -23,8 +23,8 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/categoryController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/categoryController.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/mainCategoryController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/mainCategoryController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/questionAnswerController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/questionAnswerController.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controllers/statusOrderController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/statusOrderController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/indexRouter.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/indexRouter.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,7 +65,8 @@
       <workItem from="1650445013194" duration="438000" />
       <workItem from="1650607310467" duration="6123000" />
       <workItem from="1650617742029" duration="1358000" />
-      <workItem from="1650620065907" duration="745000" />
+      <workItem from="1650620065907" duration="3331000" />
+      <workItem from="1650628731115" duration="184000" />
     </task>
     <servers />
   </component>
