@@ -1,4 +1,5 @@
 import express from "express";
+const router = express.Router();
 import {
   insertClient,
   insertAdmin,
@@ -9,7 +10,6 @@ import {
   deleteClient,
   addClient,
 } from "../controllers/userController.js";
-const router = express.Router();
 
 router.get("/insertClient", insertClient);
 router.get("/insertAdmin", insertAdmin);

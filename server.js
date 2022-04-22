@@ -2,17 +2,14 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import authRoutes from "./routes/authRoutes.js";
-import userRoutes from "./routes/userRoutes.js";
-import orderRoutes from "./routes/orderRoutes.js";
-import regionRoutes from "./routes/regionRoutes.js";
-import categoryRoutes from "./routes/categoryRoutes";
+import indexRouter from "./routes/indexRouter";
 
 import path from "path";
 import config from "./config/index.js";
 const __dirname = path.resolve();
 const app = express();
 const db = config.MONGO_URI;
+
 app.use(express.json());
 app.use(cookieParser());
 mongoose
@@ -21,11 +18,8 @@ mongoose
   .catch((err) => console.log(err));
 
 app.use(cors({ credentials: true, origin: "http://localhost:3030" }));
-app.use("/api/auth", authRoutes);
-app.use("/api/user", userRoutes);
-app.use("/api/order", orderRoutes);
-app.use("/api/region", regionRoutes);
-app.use("/api/category", categoryRoutes);
+
+app.use(indexRouter)
 
 const port = process.env.PORT || 5000;
 
