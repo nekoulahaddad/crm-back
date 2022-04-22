@@ -4,6 +4,7 @@ import { Password } from "../models/password";
 import { Role } from "../models/role";
 import { City } from "../models/city";
 import { CustomID } from "../models/customID";
+import { Shop } from "../models/shop";
 
 export const insertClient = async (req, res) => {
   const user = usersData[1];
@@ -83,10 +84,12 @@ export const insertPartner = async (req, res) => {
       { $inc: { count: 1 } },
       { upsert: true }
     );
+    const shop = await Shop.findOne({ name: "Ашан" });
     const userRole = await Role.findOne({ value: "partner" });
     const userCity = await City.findOne({ name: "Москва" });
     user.role = userRole._id;
     user.city = userCity._id;
+    user.shop_id = shop._id;
     user.displayID = displayID
       ? ("0000000" + displayID.count).slice(-7)
       : "00000000";

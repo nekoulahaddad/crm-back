@@ -1,57 +1,48 @@
-
+import { User } from "../models/user";
+import mongoose from "mongoose";
+import { ordersData } from "../data/orders";
+import { StatusOrder } from "../models/statusOrder";
+import { City } from "../models/city";
+import { Product } from "../models/product";
+import { CustomID } from "../models/customID";
+import { Order } from "../models/order";
+const { Types } = mongoose;
 
 export const insertOrders = async (req, res) => {
+  const randomNum = 0;
+  const order = ordersData[randomNum];
   try {
-    const Order = await Order.findOne();
-    const OrderObject = {
-      _id: Order._id,
-      name: Order.name,
-    };
-    const shop = new Shop({
-      name: "Auchan",
-      subdomain: "Auchan.zumzak.ru",
-    });
-    const shopObject = {
-      _id: shop._id,
-      name: shop.name,
-    };
-    const status = new OrderStatus({
-      value: "Доставлен",
-      title: "Доставлен",
-    });
-    const statusObject = {
-      _id: status._id,
-      value: status.value,
-    };
-    const region = new Region({
-      value: "Москва",
-      title: "Москва",
-      translations: [],
-      country: {
-        _id: "44444",
-        value: "Россия",
-      },
-    });
-    const regionObject = {
-      _id: region._id,
-      value: region.value,
-    };
-    const counter = await Counter.findOneAndUpdate({ name: "ordersCounter" }, { $inc: { count: 1 } }, { upsert: true });
+    const displayID = await CustomID.findOneAndUpdate(
+      { name: "ordersCounter" },
+      { $inc: { count: 1 } },
+      { upsert: true }
+    );
+    const products = await Product.find({});
+    const orderClient = await User.findOne({ firstName: "Конcтантин" });
+    const orderCity = await City.findOne({ name: "Москва" });
+    const statusOrder = await StatusOrder.findOne({ value: "created" });
 
-    const newOrder = new Order({
-      ...ordersData,
-      Order: OrderObject,
-      shop: shopObject,
-      status: statusObject,
-      region: regionObject,
-      displayID: counter ? ("00000000000000" + counter.count).slice(-14) : "000000000000000",
+    const productsObject = products.map((product) => {
+      return {
+        product_id: product._id,
+        price: product.price,
+        quantity: "3",
+      };
     });
-    console.log(newOrder);
+    order.products = productsObject;
+    order.statusOrder = statusOrder._id;
+    order.city = orderCity._id;
+    order.client = orderClient._id;
+    order.displayID = displayID
+      ? ("0000000" + displayID.count).slice(-7)
+      : "00000000";
 
-    const orders = await newOrder.save();
+    const newOrder = new Order(order);
+
+    await newOrder.save();
     res.status(200).send({
       status: "ok",
-      message: orders,
+      message: newOrder,
     });
   } catch (error) {
     res.status(500).send({

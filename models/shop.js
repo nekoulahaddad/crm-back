@@ -26,12 +26,25 @@ const shopSchema = new Schema(
         score: { type: Number, required: true },
       },
     ],
-    workingHours: [{ type: String, required: true }],
+    workingHours: {
+      weekdays: { type: String, required: false },
+      weekends: { type: String, required: false },
+    },
     phone: { type: String, required: true },
-    logo: { type: String, required: true },
-    region: { type: Types.ObjectId, ref: "region", required: true },
-    favicon: { type: String, required: true },
-    tariffs: [{ type: Types.ObjectId, ref: "tariffs", required: true }],
+    logo: { type: String, required: false },
+    city: { type: Types.ObjectId, ref: "city", required: true },
+    address: { type: String, required: false },
+    favicon: { type: String, required: false },
+    tariffs: [
+      {
+        tariff: {
+          type: Types.ObjectId,
+          ref: "tariffs",
+          required: true,
+        },
+        date: { type: Date },
+      },
+    ],
   },
   {
     timestamps: true,

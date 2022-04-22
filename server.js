@@ -2,10 +2,13 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+
 import indexRouter from "./routes/indexRouter";
 
+
 import path from "path";
-import config from "./config/index.js";
+import config from "./config/index";
+
 const __dirname = path.resolve();
 const app = express();
 const db = config.MONGO_URI;
