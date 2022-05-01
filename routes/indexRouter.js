@@ -8,6 +8,7 @@ import mainCategoryRoutes from "../routes/mainCategoryRoutes";
 import categoryRoutes from "../routes/categoryRoutes";
 import statusOrderRoutes from "../routes/statusOrderRoutes";
 import questionAnswer from "../routes/questionAnswerRoutes";
+import dasboardRoutes from "../routes/dashboardRoutes"
 
 router.use("/api/auth", authRoutes)
 router.use("/api/user", userRoutes)
@@ -17,5 +18,6 @@ router.use('/api/mainCategory', mainCategoryRoutes)
 router.use("/api/category", categoryRoutes)
 router.use("/api/statusOrder/", statusOrderRoutes)
 router.use("/api/questionAnswer/", questionAnswer)
+router.use("/api/dashboard/", dasboardRoutes)
 
 export default router;
