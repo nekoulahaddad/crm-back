@@ -12,6 +12,7 @@ const orderSchema = new Schema(
         quantity: { type: String, required: true },
       },
     ],
+    shop_id: {type: Types.ObjectId, ref: "Shop"},
     client: { type: Types.ObjectId, ref: "user" },
     city: { type: Types.ObjectId, ref: "city" },
     address: { type: String, required: false },

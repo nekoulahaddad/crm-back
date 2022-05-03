@@ -1,8 +1,13 @@
 import express from "express";
 const router = express.Router();
 import {
-  getDataForDashboard
+  getDataForDashboard,
+  getCurrentMonthStats,
+  getRecentlySoldProducts
 } from "../controllers/dashboardController.js";
 
-router.get("/getData", getDataForDashboard)
+router.get("/dataForDashboard", getDataForDashboard)
+router.get("/currentMonthStats", getCurrentMonthStats)
+router.get("/recentlySoldProducts", getRecentlySoldProducts)
+
 export default router;
