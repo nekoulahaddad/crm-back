@@ -264,16 +264,13 @@ export const getCurrentMonthStats = async (req, res) => {
 
     res.send({
       status: "ok",
-      data: currentMonthStats
+      message: currentMonthStats
     })
 
   } catch (error) {
     res.status(500).send({
       status: "error",
-      error: {
-        name: error.name,
-        message: error.message
-      }
+      error: error.message
     })
 
   }
