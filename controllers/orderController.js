@@ -1,12 +1,10 @@
 import { User } from "../models/user";
-import mongoose from "mongoose";
 import { ordersData } from "../data/orders";
 import { StatusOrder } from "../models/statusOrder";
 import { City } from "../models/city";
 import { Product } from "../models/product";
 import { CustomID } from "../models/customID";
 import { Order } from "../models/order";
-const { Types } = mongoose;
 
 export const insertOrders = async (req, res) => {
   const randomNum = 0;
@@ -140,7 +138,7 @@ export const deleteOrder = async (req, res) => {
   } catch (error) {
     res.status(500).send({
       status: "error",
-      message: error,
+      message: error.message,
     });
   }
 };

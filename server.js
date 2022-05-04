@@ -5,11 +5,8 @@ import cookieParser from "cookie-parser";
 
 import indexRouter from "./routes/indexRouter";
 
-
-import path from "path";
 import config from "./config/index";
 
-const __dirname = path.resolve();
 const app = express();
 const db = config.MONGO_URI;
 
@@ -22,12 +19,12 @@ mongoose
 
 app.use(cors({ credentials: true, origin: "http://localhost:3030" }));
 
-app.use(indexRouter)
+app.use(indexRouter);
 
-const port = process.env.PORT || 5000;
+const port = 5000;
 
 app.listen(port, () => {
-  console.log(`everything is ok ...${port} ${process.env.NODE_ENV}`);
+  console.log(`everything is ok ...${port}`);
 });
 
 export const server = app;

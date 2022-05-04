@@ -35,4 +35,13 @@ export const usersData = [
     email: "klientnatasha@mail.ru",
     gender: "женской",
   },
+  {
+    firstName: "Некула",
+    middleName: "Сергеевич",
+    lastName: "Кленова",
+    birthday: new Date(),
+    phone: "+7 (000) 000–00–04",
+    email: "nekoula@mail.ru",
+    gender: "мужской",
+  },
 ];

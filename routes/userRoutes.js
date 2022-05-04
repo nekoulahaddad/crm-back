@@ -4,10 +4,10 @@ import {
   insertClient,
   insertAdmin,
   insertPartner,
-  getClients,
-  editClient,
-  getClient,
-  deleteClient,
+  getUsersByRole,
+  editUser,
+  getUserById,
+  deleteUser,
   addClient,
 } from "../controllers/userController.js";
 
@@ -15,9 +15,9 @@ router.get("/insertClient", insertClient);
 router.get("/insertAdmin", insertAdmin);
 router.get("/insertPartner", insertPartner);
 router.get("/addClient", addClient);
-router.get("/all", getClients);
-router.put("/edit/:id", editClient);
-router.get("/get/:id", getClient);
-router.get("/delete/:id", deleteClient);
+router.get("/all", getUsersByRole);
+router.put("/edit/:id", editUser);
+router.get("/get/:id", getUserById);
+router.get("/delete/:id", deleteUser);
 
 export default router;

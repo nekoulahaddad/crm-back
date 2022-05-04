@@ -11,7 +11,7 @@ export const auth = async (req, res, next) => {
         message: "Токен не найден",
       });
     }
-    const decoded = jwt.verify(token, JWT_SECRET);
+    jwt.verify(token, JWT_SECRET);
     req.token = token;
     return next();
   } catch (error) {

@@ -1,39 +1,41 @@
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { User } from "../models/user.js";
+import { Password } from "../models/password.js";
 
-export const addAdmin = async (req, res) => {
+export const loginUser = async (req, res) => {
   try {
-    const { name, surname, email, password, phone } = req.body;
-    const admin = await Admin.findOne({ email });
+    const { email, password } = req.body;
+    const user = await Password.findOne({ email }).exec();
+    const userInfo = await User.findOne({ email }).populate("role").exec();
 
-    if (admin) {
-      return res.status(400).send({
+    if (!user || !userInfo) {
+      return res.status(401).send({
         status: "error",
-        message: "Админ уже существует",
+        message: "Пользователь не найден",
       });
     }
 
-    const newAdmin = new Admin({
-      name,
-      surname,
-      email,
-      phone,
-    });
+    const isMatch = await bcryptjs.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).send({
+        status: "error",
+        message: "Неверный пароль, попробуйте еще раз!",
+      });
+    }
 
-    const newAdminPWD = new AdminPWD({
-      admin_id: newAdmin._id,
-      password,
-      email,
-    });
-
-    await newAdmin.save();
-    await newAdminPWD.save();
-
-    res.status(200).send({
-      status: "ok",
-      message: newAdmin,
-    });
+    await userInfo.generateAuthToken();
+    await userInfo.generateRefreshToken();
+    await userInfo.save();
+    res
+      .status(200)
+      .cookie("refreshToken", userInfo.refreshToken, {
+        httpOnly: true,
+      })
+      .send({
+        status: "ok",
+        message: userInfo,
+      });
   } catch (error) {
     res.status(500).send({
       status: "error",
@@ -42,136 +44,7 @@ export const addAdmin = async (req, res) => {
   }
 };
 
-export const loginAdmin = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    const admin = await AdminPWD.findOne({ email }).exec();
-
-    if (!admin) {
-      return res.status(401).send({
-        status: "error",
-        message: "Админ не найден",
-      });
-    }
-
-    if (admin.deleted) {
-      return res.status(401).send({
-        status: "error",
-        message: "Админ удален",
-      });
-    }
-
-    const isMatch = await bcryptjs.compare(password, admin.password);
-    if (!isMatch) {
-      return res.status(401).send({
-        status: "error",
-        message: "Неверный пароль, попробуйте еще раз!",
-      });
-    }
-
-    const newAdminJWT = new AdminJWT({
-      admin_id: admin.admin_id,
-      email,
-    });
-
-    await newAdminJWT.generateAuthToken();
-    await newAdminJWT.generateRefreshToken();
-    await newAdminJWT.save();
-    res
-      .status(200)
-      .cookie("refreshToken", newAdminJWT.refresh, {
-        httpOnly: true,
-      })
-      .send({
-        status: "ok",
-        message: newAdminJWT,
-      });
-  } catch (error) {
-    res.status(500).send({
-      status: "error",
-      message: error,
-    });
-  }
-};
-
-export const getAdmin = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const admin = await Admin.findById({ _id: id });
-
-    if (!admin) {
-      return res.status(404).send({
-        status: "error",
-        message: "Админ не найден",
-      });
-    }
-
-    res.status(200).send({
-      status: "ok",
-      message: admin,
-    });
-  } catch (error) {
-    res.status(500).send({
-      status: "error",
-      message: error,
-    });
-  }
-};
-
-export const getAdmins = async (req, res) => {
-  try {
-    const admins = await Admin.find({});
-
-    if (!admins) {
-      return res.status(404).send({
-        status: "error",
-        message: "Админы не найдены",
-      });
-    }
-
-    res.status(200).send({
-      status: "ok",
-      message: admins,
-    });
-  } catch (error) {
-    res.status(500).send({
-      status: "error",
-      message: error,
-    });
-  }
-};
-
-export const deleteAdmin = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const admin_pwd = await AdminPWD.findOne({ admin_id: id });
-    if (!admin_pwd) {
-      return res.status(404).send({
-        message: "Админ не найден",
-      });
-    }
-    await admin_pwd.remove();
-
-    const admin = await Admin.updateOne(
-      { _id: id },
-      { $set: { deleted: true } }
-    );
-
-    res.status(200).send({
-      status: "ok",
-      message: "Админ удален",
-    });
-  } catch (error) {
-    res.status(500).send({
-      status: "error",
-      message: error,
-    });
-  }
-};
-
-export const refreshTokenAdmin = async (req, res) => {
+export const refreshToken = async (req, res) => {
   try {
     const { refreshToken } = req.cookies;
     if (!refreshToken) {
@@ -181,39 +54,35 @@ export const refreshTokenAdmin = async (req, res) => {
       });
     }
     await jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-    const Admin = await AdminJWT.findOne({ refresh: refreshToken }).exec();
+    const user = await User.findOne({ refreshToken }).exec();
 
-    if (!Admin) {
+    if (!user) {
       return res.status(401).send({
-        message: "Админ не найден",
+        message: "Пользователь не найден",
       });
     }
-    await Admin.generateAuthToken();
+    await user.generateAuthToken();
     res.status(200).send({
       status: "ok",
-      message: Admin.token,
+      message: user,
     });
   } catch (error) {
     res.status(500).send({
       status: "error",
-      message: error,
+      message: error.message,
     });
   }
 };
 
-export const logoutAdmin = async (req, res) => {
+export const logoutUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const admin = await AdminJWT.findOne({ admin_id: id }).exec();
+    const reInitializedTokens = {
+      refreshToken: "",
+      accessToken: "",
+    };
 
-    if (!admin) {
-      return res.status(401).send({
-        status: "error",
-        message: "Админ не найден",
-      });
-    }
-
-    admin.remove();
+    await User.update({ _id: id }, reInitializedTokens).exec();
 
     res.status(200).send({
       status: "ok",
