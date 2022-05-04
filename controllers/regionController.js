@@ -4,8 +4,6 @@ import { City } from "../models/city.js";
 import { countries } from "../data/countries.js";
 import { regions } from "../data/regions.js";
 import { cities } from "../data/cities.js";
-import mongoose from "mongoose";
-const { Types } = mongoose;
 
 export const insertCountries = async (req, res) => {
   try {

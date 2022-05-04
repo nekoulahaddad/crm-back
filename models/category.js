@@ -6,6 +6,7 @@ const categorySchema = new Schema(
     title: { type: String, required: true },
     images: { type: Array, required: true },
     slug: { type: String, required: true },
+    icon: { type: String, required: false },
     visible: { type: Boolean, required: true, default: true },
     pending: { type: Boolean, required: true, default: true },
     parent_id: { type: Types.ObjectId, required: false },

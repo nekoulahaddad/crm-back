@@ -1,4 +1,5 @@
 import { usersData } from "../data/users";
+
 import { User } from "../models/user";
 import { Password } from "../models/password";
 import { Role } from "../models/role";
@@ -6,8 +7,10 @@ import { City } from "../models/city";
 import { CustomID } from "../models/customID";
 import { Shop } from "../models/shop";
 
+import { getAllUsers } from "../aggregations/userAggregations";
+
 export const insertClient = async (req, res) => {
-  const user = usersData[1];
+  const user = usersData[4];
   try {
     const displayID = await CustomID.findOneAndUpdate(
       { name: "clientsCounter" },
@@ -42,7 +45,7 @@ export const insertClient = async (req, res) => {
 };
 
 export const insertAdmin = async (req, res) => {
-  const user = usersData[3];
+  const user = usersData[4];
   try {
     const displayID = await CustomID.findOneAndUpdate(
       { name: "adminsCounter" },
@@ -115,7 +118,7 @@ export const insertPartner = async (req, res) => {
 
 export const addClient = async (req, res) => {
   try {
-    const counter = await Counter.findOneAndUpdate(
+    const counter = await CustomID.findOneAndUpdate(
       { name: "clientsCounter" },
       { $inc: { count: 1 } },
       { upsert: true }
@@ -124,7 +127,7 @@ export const addClient = async (req, res) => {
       ...usersData[0],
       displayID: counter ? ("0000000" + counter.count).slice(-7) : "00000000",
     };
-    const clients = await Customer.create(newClient);
+    const clients = await User.create(newClient);
 
     res.status(200).send({
       status: "ok",
@@ -138,68 +141,61 @@ export const addClient = async (req, res) => {
   }
 };
 
-export const getClients = async (req, res) => {
-  let { page, sort_field, sort_direction, limit, searchTerm } = req.query;
+export const getUsersByRole = async (req, res) => {
+  let { page, sort_field, sort_direction, limit, searchTerm, userRole } =
+    req.query;
   RegExp.quote = function (str) {
     return str.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
   };
-  let clients = {};
-  let countProducts = "";
-  var regex = new RegExp(RegExp.quote(searchTerm), "gi");
+  limit = 10;
+  page = 0;
+  let users = {};
   try {
-    if (!searchTerm) {
-      countProducts = await Customer.find({}).count();
-      clients = await Customer.find({})
-        .limit(limit)
-        .skip(limit * page)
-        .sort({ [sort_field]: sort_direction })
-        .exec();
-    } else {
-      countProducts = await Customer.find({
-        $or: [{ name: regex }, { phone: regex }],
-      }).count();
-      clients = await Customer.find({
-        $or: [{ name: regex }, { phone: regex }],
-      })
-        .limit(limit)
-        .skip(limit * page)
-        .sort({ [sort_field]: sort_direction })
-        .exec();
-    }
-    if (!clients) {
+    users = await getAllUsers(
+      User,
+      userRole,
+      sort_field,
+      sort_direction,
+      limit,
+      page,
+      searchTerm
+    );
+    if (!users) {
       return res.status(404).send({
         status: "error",
-        message: "Клиенты не найдены",
+        message: "Пользователи не найдены",
       });
     }
     res.status(200).send({
-      status: "ok",
-      message: { clients, total_pages: Math.ceil(countProducts / limit) },
+      message: {
+        users: users[0].paginatedResults,
+        total_pages: Math.ceil(users[0].totalCount.count / limit),
+      },
     });
   } catch (error) {
     res.status(500).send({
       status: "error",
-      message: error,
+      message: error.message,
     });
   }
 };
 
-export const getClient = async (req, res) => {
+export const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const client = await Customer.findById({ _id: id });
+    const user = await User.findById({ _id: id });
 
-    if (!client) {
+    if (!user) {
       return res.status(404).send({
         status: "error",
-        message: "Клиент не найден",
+        message: "Пользователь не найден",
       });
     }
 
     res.status(200).send({
       status: "ok",
-      message: client,
+      message: user,
     });
   } catch (error) {
     res.status(500).send({
@@ -209,11 +205,11 @@ export const getClient = async (req, res) => {
   }
 };
 
-export const editClient = async (req, res) => {
+export const editUser = async (req, res) => {
   try {
     const { id } = req.params;
     const { data } = req.body;
-    const client = await Customer.updateOne({ _id: id }, data);
+    await User.updateOne({ _id: id }, { $set: data });
     res.status(200).send({
       status: "ok",
       message: "информация о клиенте успешно изменена",
@@ -221,26 +217,29 @@ export const editClient = async (req, res) => {
   } catch (error) {
     res.status(500).send({
       status: "error",
-      message: error,
+      message: error.message,
     });
   }
 };
 
-export const deleteClient = async (req, res) => {
+export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const client = await Customer.findById({ _id: id });
-    if (!client) {
+    const user = await User.findById({ _id: id });
+    if (!user) {
       return res.status(404).send({
         status: "error",
-        message: "клиент не найден",
+        message: "Пользователь не найден",
       });
     }
-    await client.remove();
+    const userPassword = await Password.findById({ user_id: id });
+    await user.remove();
+    await userPassword.remove();
+
     res.status(200).send({
       status: "ok",
-      message: "Клиент успешно удалён",
+      message: "Пользователь успешно удалён",
     });
   } catch (error) {
     res.status(500).send({

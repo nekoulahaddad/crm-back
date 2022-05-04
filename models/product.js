@@ -17,6 +17,7 @@ const productSchema = new Schema(
     category_id: { type: Types.ObjectId, ref: "category" },
     mainCategory_id: { type: Types.ObjectId, ref: "mainCategory" },
     visible: { type: Boolean, required: true, default: true },
+    pending: { type: Boolean, required: true, default: true },
     unit: { type: String, required: true },
     description: { type: String, required: true },
     seo: {
