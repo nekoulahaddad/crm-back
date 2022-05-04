@@ -7,12 +7,12 @@ const orderSchema = new Schema(
     statusOrder: { type: Types.ObjectId, ref: "statusOrder", required: true },
     products: [
       {
-        product_id: { type: Types.ObjectId, ref: "product" },
+        product_id: { type: Types.ObjectId, ref: "Product" },
         price: { type: Number, required: true },
         quantity: { type: String, required: true },
       },
     ],
-    shop_id: { type: Types.ObjectId, ref: "Shop" },
+    shop_id: {type: Types.ObjectId, ref: "Shop"},
     client: { type: Types.ObjectId, ref: "user" },
     city: { type: Types.ObjectId, ref: "city" },
     address: { type: String, required: false },
