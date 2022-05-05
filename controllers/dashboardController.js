@@ -22,16 +22,15 @@ export const getDataForDashboard = async (req, res) => {
   try {
     const todayOrdersValue = await Order.find({ "shop_id": shopId, "createdAt": { '$gte': today } }).count()
     const yesterdayOrders = await Order.find({ "shop_id": shopId, "createdAt": { '$gte': yesterday, '$lte': today } }).count()
-    const todayOrdersGrowth = (todayOrdersValue - yesterdayOrders) / yesterdayOrders * 100
+    const todayOrdersGrowth = (todayOrdersValue - yesterdayOrders) / yesterdayOrders * 100 | 0
     const todayOrders = { todayOrdersValue, todayOrdersGrowth }
 
     const todayUsersValue = await User.find({ "createdAt": { '$gte': today } }).count()
     const yesterdayUsers = await User.find({ "createdAt": { '$gte': yesterday, '$lte': today } }).count()
-    const todayUsersGrowth = (todayUsersValue - yesterdayUsers) / yesterdayUsers * 100 || 0
+    const todayUsersGrowth = (todayUsersValue - yesterdayUsers) / yesterdayUsers * 100 | 0
     const todayUsers = { todayUsersValue, todayUsersGrowth }
 
-    console.log(currentMonthStart)
-
+  
     const currentMonthSum = await Order.aggregate([
       {
         $match: {
@@ -76,20 +75,26 @@ export const getDataForDashboard = async (req, res) => {
 
     ])
 
-    //const currentMonthProductsGrowth = (currentMonthSum[0].sum - previousMonthSum[0].sum) / previousMonthSum[0].sum * 100
-    const currentMonthSales = { currentMonthSum, /*currentMonthProductsGrowth*/ }
+    if (currentMonthSum.length === 0) {
+      currentMonthSum.push({ sum: 0 })
+    }
+
+    if (previousMonthSum.length === 0) {
+      previousMonthSum.push({ sum: 0 })
+    }
 
 
-
+    const currentMonthProductsGrowth = (currentMonthSum[0].sum - previousMonthSum[0].sum) / previousMonthSum[0].sum * 100 | 0
+    const currentMonthSales = { currentMonthSum, currentMonthProductsGrowth }
 
     const totalUsers = await User.find({}).count()
     const previousMonthUsers = await User.find({ "createdAt": { '$gte': previousMonthStart, '$lte': previousMonthEnd } }).count()
     const currentMonthUsers = await User.find({ "createdAt": { '$gte': currentMonthStart, '$lte': currentMonthEnd } }).count()
-    const totalOrdersSumValue = await Order.aggregate([{ $group: { _id: Date.now(), sum: { $sum: "$sum" } } }]).sum
-    ///const currentMonthOrdersGrowth = currentMonthProductsGrowth
-    const totalOrdersSum = { totalOrdersSumValue, /*currentMonthOrdersGrowth*/ }
+    const totalOrdersSumValue = await Order.aggregate([{ $group: { _id: Date.now(), sum: { $sum: "$sum" } } }])
+    const currentMonthOrdersGrowth = (currentMonthSum[0].sum - previousMonthSum[0].sum) / previousMonthSum[0].sum * 100 | 0
+    const totalOrdersSum = { totalOrdersSumValue: totalOrdersSumValue[0].sum, currentMonthOrdersGrowth }
     const totalOrdersCount = await Order.find({ "shop_id": shopId }).count()
-    const canceledOrdersCount = await StatusOrder.find({ value: 'canceled' }).count()
+    const canceledOrdersCount = await Order.find({ statusOrder: '6272abf4daae78f37145cd49' }).count()
     const totalProductsCount = await Product.find({ "shop_id": shopId }).count()
 
     const todaySalesSum = await Order.aggregate([
@@ -108,7 +113,7 @@ export const getDataForDashboard = async (req, res) => {
       {
         $group: {
           _id: Date.now(),
-          sum: { $sum: "$sum" }
+          sum: { $sum: "$sum" } || 0
         }
       }
     ])
@@ -133,9 +138,18 @@ export const getDataForDashboard = async (req, res) => {
         }
       }
     ])
-    const todayProductsGrowth = (todaySalesSum[0].sum - yesterdaySalesSum[0].sum) / yesterdaySalesSum[0].sum * 100
-    const todaySales = { todaySalesSum, todayProductsGrowth }
 
+    if (todaySalesSum.length === 0) {
+      todaySalesSum.push({ sum: 0 })
+    }
+
+    if (yesterdaySalesSum.length === 0) {
+      yesterdaySalesSum.push({ sum: 0 })
+    }
+
+    const todayProductsGrowth = (todaySalesSum[0].sum - yesterdaySalesSum[0].sum) / yesterdaySalesSum[0].sum * 100 | 0
+
+    const todaySales = { todaySalesSum: todaySalesSum[0].sum, todayProductsGrowth }
 
 
     const moneyBought = await Product.aggregate(
@@ -175,28 +189,35 @@ export const getDataForDashboard = async (req, res) => {
       }
     ])
 
+    if (moneyBought.length === 0) {
+      moneyBought.push({ sum: 0 })
+    }
+
+    if (moneySold.length === 0) {
+      moneySold.push({ sum: 0 })
+    }
+
+
     const income = moneySold[0].sum - moneyBought[0].sum
-
-
 
     const data = {
       todayOrders,
       todayUsers,
-      totalUsers,
-      previousMonthUsers,
-      currentMonthUsers,
+      currentMonthSales,
       totalOrdersSum,
       totalOrdersCount,
       canceledOrdersCount,
       totalProductsCount,
-      income,
+      previousMonthUsers,
+      currentMonthUsers,
+      totalUsers,
       todaySales,
-      currentMonthSales,
+      income,
     }
 
     res.send({
       status: "ok",
-      data: data
+      message: data
     })
   } catch (error) {
     res.status(500).send({
@@ -210,15 +231,27 @@ export const getDataForDashboard = async (req, res) => {
 }
 
 export const getCurrentMonthStats = async (req, res) => {
+  const { shopId } = req.query
   try {
     const aggregationCurMonthStats = await Order.aggregate(
       [
         {
           $match: {
-            createdAt: {
-              '$lte': currentMonthEnd,
-              '$gte': currentMonthStart
+            $and: [{
+              createdAt: {
+                '$lte': currentMonthEnd,
+                '$gte': currentMonthStart
+              }
+            },
+            {
+              shop_id: mongoose.Types.ObjectId(shopId)
             }
+            ]
+          }
+        },
+        {
+          $match: {
+            
           }
         },
         {
@@ -278,14 +311,16 @@ export const getCurrentMonthStats = async (req, res) => {
 }
 
 export const getRecentlySoldProducts = async (req, res) => {
+
+  const { shopId } = req.query
+
   try {
-    const populatedProducts = await Order.find().populate('products.product_id')
+    const populatedProducts = await Order.find({ "shop_id": shopId}).populate('products.product_id')
     const soldProducts = populatedProducts.map(array => array.products).flat(1)
     const recentlySoldProducts = soldProducts.slice(Math.max(soldProducts.length - 9, 1))
-
     res.send({
       status: "ok",
-      data: recentlySoldProducts
+      message: recentlySoldProducts
     })
 
   } catch (error) {
