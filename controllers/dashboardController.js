@@ -2,22 +2,22 @@ import { Order } from "../models/order";
 import { User } from "../models/user";
 import { Product } from "../models/product";
 import { StatusOrder } from "../models/statusOrder";
-const mongoose = require('mongoose');
-
-
+const mongoose = require("mongoose");
 
 const now = new Date();
 const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-const yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+const yesterday = new Date(
+  now.getFullYear(),
+  now.getMonth(),
+  now.getDate() - 1
+);
 const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 2);
 const currentMonthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 1);
 const previousMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 2);
 const previousMonthEnd = new Date(now.getFullYear(), now.getMonth(), 1);
 
-
 export const getDataForDashboard = async (req, res) => {
-
-  const { shopId } = req.query
+  const { shopId } = req.query;
 
   try {
     const todayOrdersValue = await Order.find({ "shop_id": shopId, "createdAt": { '$gte': today } }).count()
@@ -36,44 +36,42 @@ export const getDataForDashboard = async (req, res) => {
         $match: {
           $and: [
             {
-              createdAt: { $gte: currentMonthStart, $lte: currentMonthEnd }
+              createdAt: { $gte: currentMonthStart, $lte: currentMonthEnd },
             },
             {
-              shop_id: mongoose.Types.ObjectId(shopId)
-            }
-          ]
-        }
+              shop_id: mongoose.Types.ObjectId(shopId),
+            },
+          ],
+        },
       },
       {
         $group: {
           _id: Date.now(),
-          sum: { $sum: "$sum" }
-        }
-      }
-
-    ])
+          sum: { $sum: "$sum" },
+        },
+      },
+    ]);
 
     const previousMonthSum = await Order.aggregate([
       {
         $match: {
           $and: [
             {
-              createdAt: { $gte: previousMonthStart, $lte: previousMonthEnd }
+              createdAt: { $gte: previousMonthStart, $lte: previousMonthEnd },
             },
             {
-              shop_id: mongoose.Types.ObjectId(shopId)
-            }
-          ]
+              shop_id: mongoose.Types.ObjectId(shopId),
+            },
+          ],
         },
       },
       {
         $group: {
           _id: Date.now(),
-          sum: { $sum: "$sum" }
-        }
-      }
-
-    ])
+          sum: { $sum: "$sum" },
+        },
+      },
+    ]);
 
     if (currentMonthSum.length === 0) {
       currentMonthSum.push({ sum: 0 })
@@ -100,15 +98,15 @@ export const getDataForDashboard = async (req, res) => {
     const todaySalesSum = await Order.aggregate([
       {
         $match: {
-          $and: [{
-            createdAt: { $gte: today }
-
-          },
-          {
-            shop_id: mongoose.Types.ObjectId(shopId)
-          }
-          ]
-        }
+          $and: [
+            {
+              createdAt: { $gte: today },
+            },
+            {
+              shop_id: mongoose.Types.ObjectId(shopId),
+            },
+          ],
+        },
       },
       {
         $group: {
@@ -121,15 +119,15 @@ export const getDataForDashboard = async (req, res) => {
     const yesterdaySalesSum = await Order.aggregate([
       {
         $match: {
-          $and: [{
-            createdAt: { $gte: yesterday, $lte: today }
-
-          },
-          {
-            shop_id: mongoose.Types.ObjectId(shopId)
-          }
-          ]
-        }
+          $and: [
+            {
+              createdAt: { $gte: yesterday, $lte: today },
+            },
+            {
+              shop_id: mongoose.Types.ObjectId(shopId),
+            },
+          ],
+        },
       },
       {
         $group: {
@@ -159,27 +157,40 @@ export const getDataForDashboard = async (req, res) => {
             shop_id: mongoose.Types.ObjectId(shopId)
           }
         },
-        {
-          $project: {
-            total: {
-              $multiply: ["$price", "$quantity"]
-            }
-          }
+      },
+    ]);
+    const todayProductsGrowth =
+      ((todaySalesSum[0].sum - yesterdaySalesSum[0].sum) /
+        yesterdaySalesSum[0].sum) *
+      100;
+    const todaySales = { todaySalesSum, todayProductsGrowth };
+
+    const moneyBought = await Product.aggregate([
+      {
+        $match: {
+          shop_id: mongoose.Types.ObjectId(shopId),
         },
-        {
-          $group: {
-            _id: Date.now(),
-            sum: { $sum: "$total" }
-          }
-        }
-      ]
-    )
+      },
+      {
+        $project: {
+          total: {
+            $multiply: ["$price", "$quantity"],
+          },
+        },
+      },
+      {
+        $group: {
+          _id: Date.now(),
+          sum: { $sum: "$total" },
+        },
+      },
+    ]);
 
     const moneySold = await Order.aggregate([
       {
         $match: {
-          shop_id: mongoose.Types.ObjectId(shopId)
-        }
+          shop_id: mongoose.Types.ObjectId(shopId),
+        },
       },
       {
         $group: {
@@ -224,11 +235,11 @@ export const getDataForDashboard = async (req, res) => {
       status: "error",
       error: {
         name: error.name,
-        message: error.message
-      }
-    })
+        message: error.message,
+      },
+    });
   }
-}
+};
 
 export const getCurrentMonthStats = async (req, res) => {
   const { shopId } = req.query
@@ -280,35 +291,57 @@ export const getCurrentMonthStats = async (req, res) => {
               $push: "$quantity"
             }
           },
-
         },
-        { $sort: { _id: 1 } }
-      ]
-    )
-    const currentMonthStats = aggregationCurMonthStats.map(day => {
+      },
+      {
+        $project: {
+          quantity: {
+            $map: {
+              input: "$products.quantity",
+              as: "quantity",
+              in: {
+                $toInt: "$$quantity",
+              },
+            },
+          },
+          createdAt: "$createdAt",
+        },
+      },
+      {
+        $group: {
+          _id: {
+            $dateToString: {
+              format: "%Y-%m-%d",
+              date: "$createdAt",
+            },
+          },
+          products: {
+            $push: "$quantity",
+          },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+    const currentMonthStats = aggregationCurMonthStats.map((day) => {
       const count = day.products.flat(1).reduce((sum, a) => {
-        return sum + a
-      }, 0)
-      const _id = day._id
-      const obj = { _id, count }
-      return obj
-    })
-
+        return sum + a;
+      }, 0);
+      const _id = day._id;
+      const obj = { _id, count };
+      return obj;
+    });
 
     res.send({
       status: "ok",
-      message: currentMonthStats
-    })
-
+      message: currentMonthStats,
+    });
   } catch (error) {
     res.status(500).send({
       status: "error",
-      error: error.message
-    })
-
+      error: error.message,
+    });
   }
-
-}
+};
 
 export const getRecentlySoldProducts = async (req, res) => {
 
@@ -328,8 +361,8 @@ export const getRecentlySoldProducts = async (req, res) => {
       status: "error",
       error: {
         name: error.name,
-        message: error.message
-      }
-    })
+        message: error.message,
+      },
+    });
   }
-}
+};
