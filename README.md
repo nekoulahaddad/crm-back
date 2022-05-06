@@ -179,28 +179,28 @@ pm2 restart admin_zum
 **Пример ответа:**
 
 {
-"status":"ok",
-"data":[
-{
-"product_id":{
-"translations":{
-"en":{
-"title":"iphone",
-"description":"very expensive phone",
-"unit":"piece"
-}
-},
-"seo":{
-"title":"iphone",
-"keywords":"Auchan online store delivers more than 100,000 fresh food and household goods to your home or office in Moscow and other Russian cities.",
-"description":"Auchan online store delivers more than 100,000 fresh food and household goods to your home or office in Moscow and other Russian cities."
-},
-"pending":true,
-"\_id":"626151ca4aa3b0f93ae66c7b",
-"title":"iphone3",
-"article":"126548",
-"options":[
-
+   "status":"ok",
+   "data":[
+      {
+         "product_id":{
+            "translations":{
+               "en":{
+                  "title":"iphone",
+                  "description":"very expensive phone",
+                  "unit":"piece"
+               }
+            },
+            "seo":{
+               "title":"iphone",
+               "keywords":"Auchan online store delivers more than 100,000 fresh food and household goods to your home or office in Moscow and other Russian cities.",
+               "description":"Auchan online store delivers more than 100,000 fresh food and household goods to your home or office in Moscow and other Russian cities."
+            },
+            "pending":true,
+            "id":"626151ca4aa3b0f93ae66c7b",
+            "title":"iphone3",
+            "article":"126548",
+            "options":[
+               
             ],
             "images":[
                "https://img.mvideo.ru/Pdb/30056770b.jpg",
@@ -223,6 +223,5 @@ pm2 restart admin_zum
          "quantity":"3",
          "_id":"6262494f45048e724d1bb45f"
       }
-
-]
+   ]
 }
