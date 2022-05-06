@@ -99,14 +99,33 @@ export const getDataForDashboard = async (req, res) => {
       0;
     const currentMonthSales = { currentMonthSum, currentMonthProductsGrowth };
 
-    const totalUsers = await User.find({}).count();
+    const totalUsers = await User.find({ shop_id: shopId }).count();
     const previousMonthUsers = await User.find({
-      createdAt: { $gte: previousMonthStart, $lte: previousMonthEnd },
+      $and: [
+        {
+          createdAt: { $gte: previousMonthStart, $lte: previousMonthEnd },
+        },
+        {
+          shop_id: mongoose.Types.ObjectId(shopId),
+        },
+      ],
     }).count();
     const currentMonthUsers = await User.find({
-      createdAt: { $gte: currentMonthStart, $lte: currentMonthEnd },
+      $and: [
+        {
+          createdAt: { $gte: previousMonthStart, $lte: previousMonthEnd },
+        },
+        {
+          shop_id: mongoose.Types.ObjectId(shopId),
+        },
+      ],
     }).count();
     const totalOrdersSumValue = await Order.aggregate([
+      {
+        $match: {
+          shop_id: mongoose.Types.ObjectId(shopId),
+        },
+      },
       { $group: { _id: Date.now(), sum: { $sum: "$sum" } } },
     ]);
     const currentMonthOrdersGrowth =
@@ -325,7 +344,7 @@ export const getCurrentMonthStats = async (req, res) => {
   } catch (error) {
     res.status(500).send({
       status: "error",
-      error: error.message,
+      message: error.message,
     });
   }
 };
