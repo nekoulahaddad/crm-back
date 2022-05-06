@@ -178,7 +178,7 @@ pm2 restart admin_zum
 
 **Пример ответа:**
 
-```js
+```json
 {
    "status":"ok",
    "data":[
@@ -193,8 +193,8 @@ pm2 restart admin_zum
             },
             "seo":{
                "title":"iphone",
-               "keywords":"Auchan online store delivers more than 100,000 fresh food and household goods to your home or office in Moscow and other Russian cities.",
-               "description":"Auchan online store delivers more than 100,000 fresh food and household goods to your home or office in Moscow and other Russian cities."
+               "keywords":"Auchan online store delivers more than 100,000 fresh food and household .",
+               "description":"Auchan online store delivers more than 100,000 fresh food and household ."
             },
             "pending":true,
             "_id":"626151ca4aa3b0f93ae66c7b",
@@ -210,7 +210,7 @@ pm2 restart admin_zum
             "category_id":"6261287c2fa944cff61fe2f8",
             "visible":true,
             "unit":"шт",
-            "description":"Auchan online store delivers more than 100,000 fresh food and household goods to your home or office in Moscow and other Russian cities.",
+            "description":"Auchan online store delivers more than 100,000 fresh food and household s.",
             "price":4500,
             "discountPrice":5450,
             "purchasePrice":4546545,
