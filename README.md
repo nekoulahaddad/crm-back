@@ -178,6 +178,7 @@ pm2 restart admin_zum
 
 **Пример ответа:**
 
+```js
 {
    "status":"ok",
    "data":[
@@ -196,7 +197,7 @@ pm2 restart admin_zum
                "description":"Auchan online store delivers more than 100,000 fresh food and household goods to your home or office in Moscow and other Russian cities."
             },
             "pending":true,
-            "id":"626151ca4aa3b0f93ae66c7b",
+            "_id":"626151ca4aa3b0f93ae66c7b",
             "title":"iphone3",
             "article":"126548",
             "options":[
@@ -225,3 +226,4 @@ pm2 restart admin_zum
       }
    ]
 }
+```
