@@ -6,6 +6,7 @@ const questionAnswerSchema = new Schema(
     question: { type: String, required: true },
     answer: { type: String, required: true },
     shop_id: { type: Types.ObjectId, ref: "shop" },
+    visible: { type: Boolean, required: true, default: true },
     translations: {
       en: {
         question: { type: String, required: false },
