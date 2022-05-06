@@ -33,6 +33,7 @@ pm2 restart admin_zum
 
 **Пример ответа:**
 
+```json
     {
         "status": "ok",
         "message": {
@@ -71,7 +72,7 @@ pm2 restart admin_zum
             "total_customer_count": "5"
         }
     }
-
+```
 #### Редактирование клиента (/customers/edit/:id):
 
 `Редактирование доступно только для авторизованных админов. В качестве PUT-параметра нужно передать авторизационный токен (в поле token).`
@@ -89,6 +90,7 @@ pm2 restart admin_zum
 
 Пример ответа (ошибка авторизации):
 
+```json
     {
         "status": "error",
         "message": {
@@ -101,6 +103,7 @@ pm2 restart admin_zum
     {
         "status": "ok"
     }
+```
 
 #### Получение данных для дэшборда (/dashboard/dataForDashBoard)
 
@@ -110,6 +113,7 @@ pm2 restart admin_zum
 
 **Пример ответа:**
 
+```json
     {
         "status": "ok",
         "data": {
@@ -147,6 +151,7 @@ pm2 restart admin_zum
             "income": 25128000
         }
     }
+```
 
 #### Получение количества проданных товаров за текущий месяц по дням для дэшборда (/dashboard/currentMonthStats)
 
@@ -156,6 +161,7 @@ pm2 restart admin_zum
 
 **Пример ответа:**
 
+```json
     {
         "status": "ok",
         "message": [
@@ -169,6 +175,7 @@ pm2 restart admin_zum
             }
         ]
     }
+```
 
 #### Получение недавно проданных товаров для дэшборда (/dashboard/recentlySoldProducts)
 
