@@ -97,9 +97,10 @@ pm2 restart admin_zum
             "token": "Токен истёк"
         }
     }
-
+```
 Пример ответа:
 
+```json
     {
         "status": "ok"
     }
