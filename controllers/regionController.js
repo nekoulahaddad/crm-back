@@ -70,7 +70,7 @@ export const getCountries = async (req, res) => {
   };
   let regex = new RegExp(RegExp.quote(searchTerm), "gi");
   try {
-    let countries = await Country.find({ value: regex })
+    let countries = await Country.find({ name: regex })
       .sort({ value: 1 })
       .limit(5)
       .exec();
@@ -93,7 +93,7 @@ export const getCities = async (req, res) => {
   };
   let regex = new RegExp(RegExp.quote(searchTerm), "gi");
   try {
-    let cities = await City.find({ value: regex })
+    let cities = await City.find({ name: regex })
       .sort({ value: 1 })
       .limit(5)
       .exec();

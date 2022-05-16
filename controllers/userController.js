@@ -7,7 +7,10 @@ import { City } from "../models/city";
 import { CustomID } from "../models/customID";
 import { Shop } from "../models/shop";
 
-import { getAllUsers } from "../aggregations/userAggregations";
+import {
+  getAllUsers,
+  getAllUsersForOneShop,
+} from "../aggregations/userAggregations";
 
 export const insertClient = async (req, res) => {
   const user = usersData[4];
@@ -169,7 +172,47 @@ export const getUsersByRole = async (req, res) => {
     res.status(200).send({
       message: {
         users: users[0].paginatedResults,
-        total_pages: Math.ceil(users[0].totalCount.count / limit),
+        totalUsers: users[0].totalCount.count,
+        totalPages: Math.ceil(users[0].totalCount.count / limit),
+      },
+    });
+  } catch (error) {
+    res.status(500).send({
+      status: "error",
+      message: error.message,
+    });
+  }
+};
+
+export const getUsersByRoleForOneShop = async (req, res) => {
+  let { page, limit, searchTerm, userRole, region } = req.query;
+  let { id } = req.params;
+  RegExp.quote = function (str) {
+    return str.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+  };
+  limit = 6;
+  page = 0;
+  let users = {};
+  try {
+    users = await getAllUsersForOneShop(
+      User,
+      userRole,
+      limit,
+      page,
+      searchTerm,
+      id,
+      region
+    );
+    if (!users) {
+      return res.status(404).send({
+        status: "error",
+        message: "Пользователи не найдены",
+      });
+    }
+    res.status(200).send({
+      message: {
+        users: users,
+        totalUsers: users,
       },
     });
   } catch (error) {
