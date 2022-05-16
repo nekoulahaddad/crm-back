@@ -5,7 +5,7 @@ import { City } from "../models/city";
 import { Product } from "../models/product";
 import { CustomID } from "../models/customID";
 import { Order } from "../models/order";
-
+import { getAllOrders } from "../aggregations/orderAggregations";
 export const insertOrders = async (req, res) => {
   const randomNum = 0;
   const order = ordersData[randomNum];
@@ -52,38 +52,40 @@ export const insertOrders = async (req, res) => {
 
 export const getOrders = async (req, res) => {
   let { page, sort_field, sort_direction, limit, searchTerm } = req.query;
-  let orders = null;
-  let countOrders = "";
+  RegExp.quote = function (str) {
+    return str.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+  };
+  limit = 10;
+  page = 0;
+  let orders = {};
   try {
-    if (!searchTerm) {
-      countOrders = await Order.find({}).count();
-      orders = await Order.find({})
-        .limit(limit)
-        .skip(limit * page)
-        .sort({ [sort_field]: sort_direction })
-        .exec();
-    } else {
-      countOrders = await Order.find({ displayID: searchTerm }).count();
-      orders = await Order.find({ displayID: searchTerm })
-        .limit(limit)
-        .skip(limit * page)
-        .sort({ [sort_field]: sort_direction })
-        .exec();
-    }
+    orders = await getAllOrders(
+      Order,
+      sort_field,
+      sort_direction,
+      limit,
+      page,
+      searchTerm
+    );
     if (!orders) {
       return res.status(404).send({
         status: "error",
         message: "Заказы не найдены",
       });
     }
+    orders = orders.map((order) => order.order);
     res.status(200).send({
       status: "ok",
-      message: { orders, total_pages: Math.ceil(countOrders / limit) },
+      message: {
+        orders: orders,
+        totalOrders: orders[0].totalCount.count,
+        totalPages: Math.ceil(orders[0].totalCount.count / limit),
+      },
     });
   } catch (error) {
     res.status(500).send({
       status: "error",
-      message: error,
+      message: error.message,
     });
   }
 };

@@ -22,8 +22,8 @@ const userSchema = new Schema(
     role: { type: Types.ObjectId, ref: "Role" },
     accessToken: { type: String, required: false },
     refreshToken: { type: String, required: false },
-    city: { type: Types.ObjectId, ref: "city" },
-    shop_id: { type: Types.ObjectId, ref: "shop" },
+    city: { type: Types.ObjectId, ref: "City" },
+    shop_id: { type: Types.ObjectId, ref: "Shop" },
   },
   {
     timestamps: true,

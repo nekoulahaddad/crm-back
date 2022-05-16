@@ -9,6 +9,7 @@ import {
 
 router.get("/insertOrder", insertOrders);
 router.get("/all", getOrders);
+router.get("/allForOneShop/id", getOrders);
 router.get("/allByClient/:id", getOrdersByClientId);
 router.get("/delete/:id", deleteOrder);
 
