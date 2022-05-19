@@ -32,7 +32,7 @@ const shopSchema = new Schema(
     },
     phone: { type: String, required: true },
     logo: { type: String, required: false },
-    city: { type: Types.ObjectId, ref: "city", required: true },
+    city: { type: Types.ObjectId, ref: "City", required: true },
     address: { type: String, required: false },
     favicon: { type: String, required: false },
     tariffs: [

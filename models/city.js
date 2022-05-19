@@ -11,7 +11,7 @@ const citySchema = new Schema({
     en: { name: { type: String, required: false } },
   },
   country_id: { type: Types.ObjectId, ref: "country" },
-  region_id: { type: Types.ObjectId, ref: "region" },
+  region_id: { type: Types.ObjectId, ref: "Region" },
 });
 
 export const City = model("City", citySchema);
