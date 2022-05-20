@@ -30,7 +30,15 @@ const shopSchema = new Schema(
       weekdays: { type: String, required: false },
       weekends: { type: String, required: false },
     },
-    phone: { type: String, required: true },
+    phone: { 
+      value: { type: String, required: false },
+      description: { type: String, required: false },
+    },
+    email: {
+      value: { type: String, required: false },
+      info: { type: String, required: false }
+    },
+    sectionInfo: { type: String, required: false },
     logo: { type: String, required: false },
     city: { type: Types.ObjectId, ref: "city", required: true },
     address: { type: String, required: false },

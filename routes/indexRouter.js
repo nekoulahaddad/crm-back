@@ -9,6 +9,8 @@ import categoryRoutes from "../routes/categoryRoutes";
 import statusOrderRoutes from "../routes/statusOrderRoutes";
 import questionAnswer from "../routes/questionAnswerRoutes";
 import dasboardRoutes from "../routes/dashboardRoutes"
+import shopRoutes from "../routes/shopRoutes"
+import requisitesRoutes from "../routes/requisitesRoutes"
 
 router.use("/api/auth", authRoutes)
 router.use("/api/user", userRoutes)
@@ -19,5 +21,7 @@ router.use("/api/category", categoryRoutes)
 router.use("/api/statusOrder/", statusOrderRoutes)
 router.use("/api/questionAnswer/", questionAnswer)
 router.use("/api/dashboard/", dasboardRoutes)
+router.use("/api/shop/", shopRoutes)
+router.use("/api/requisites/", requisitesRoutes)
 
 export default router;
