@@ -12,7 +12,7 @@ const orderSchema = new Schema(
         quantity: { type: String, required: true },
       },
     ],
-    shop_id: {type: Types.ObjectId, ref: "Shop"},
+    shop_id: { type: Types.ObjectId, ref: "Shop" },
     client: { type: Types.ObjectId, ref: "user" },
     city: { type: Types.ObjectId, ref: "city" },
     address: { type: String, required: false },
@@ -24,6 +24,7 @@ const orderSchema = new Schema(
     deliveryType: { type: String, required: true },
     paymentType: { type: String, required: true },
     comment: { type: String, required: true },
+    visible: { type: Boolean, required: true, default: true },
   },
   {
     timestamps: true,
