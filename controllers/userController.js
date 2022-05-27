@@ -1,3 +1,6 @@
+import mongoose from "mongoose";
+const { Types } = mongoose;
+
 import { usersData } from "../data/users";
 
 import { User } from "../models/user";
@@ -6,6 +9,7 @@ import { Role } from "../models/role";
 import { City } from "../models/city";
 import { CustomID } from "../models/customID";
 import { Shop } from "../models/shop";
+import { Order } from "../models/order";
 
 import {
   getAllUsers,
@@ -171,9 +175,9 @@ export const getUsersByRole = async (req, res) => {
     }
     res.status(200).send({
       message: {
-        users: users[0].paginatedResults,
-        totalUsers: users[0].totalCount.count,
-        totalPages: Math.ceil(users[0].totalCount.count / limit),
+        users: users[0] ? users[0].paginatedResults : null,
+        totalUsers: users[0] ? users[0].totalCount.count : 0,
+        totalPages: users[0] ? Math.ceil(users[0].totalCount.count / limit) : 0,
       },
     });
   } catch (error) {
@@ -184,24 +188,29 @@ export const getUsersByRole = async (req, res) => {
   }
 };
 
-export const getUsersByRoleForOneShop = async (req, res) => {
-  let { page, limit, searchTerm, userRole, region } = req.query;
-  let { id } = req.params;
+export const getClientsForOneShop = async (req, res) => {
+  let { page, limit, searchTerm, cityId } = req.query;
+  let { shopId } = req.params;
+  let userRole = "client";
   RegExp.quote = function (str) {
     return str.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
   };
   limit = 6;
   page = 0;
-  let users = {};
+
+  const shopClientsArray = await Order.find({
+    shop_id: Types.ObjectId(shopId),
+  }).distinct("client");
+
   try {
-    users = await getAllUsersForOneShop(
+    let users = await getAllUsersForOneShop(
       User,
       userRole,
       limit,
       page,
       searchTerm,
-      id,
-      region
+      cityId,
+      shopClientsArray
     );
     if (!users) {
       return res.status(404).send({
@@ -211,8 +220,9 @@ export const getUsersByRoleForOneShop = async (req, res) => {
     }
     res.status(200).send({
       message: {
-        users: users,
-        totalUsers: users,
+        users: users[0] ? users[0].paginatedResults : null,
+        totalUsers: users[0] ? users[0].totalCount.count : 0,
+        totalPages: users[0] ? Math.ceil(users[0].totalCount.count / limit) : 0,
       },
     });
   } catch (error) {

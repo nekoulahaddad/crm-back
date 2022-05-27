@@ -1,18 +1,24 @@
+import mongoose from "mongoose";
+const { Types } = mongoose;
 export const getAllOrders = async (
   Order,
   sort_field,
   sort_direction,
   limit,
   page,
-  searchTerm
+  searchTerm,
+  clientId
 ) => {
-  let matchCriteria = {};
+  let matchCriteria = [{ visible: true }];
   if (searchTerm) {
     let regex = new RegExp(RegExp.quote(searchTerm), "gi");
-    matchCriteria = { displayID: regex };
+    matchCriteria.push({ displayID: regex });
+  }
+  if (clientId) {
+    matchCriteria.push({ client: Types.ObjectId(clientId) });
   }
   const orders = await Order.aggregate()
-    .match(matchCriteria)
+    .match({ $and: matchCriteria })
     .sort({ [sort_field]: sort_direction })
     .facet({
       paginatedResults: [{ $skip: limit * page }, { $limit: limit }],
@@ -73,37 +79,26 @@ export const getAllOrders = async (
 
 export const getAllOrdersForOneShop = async (
   Order,
-  sortFields,
+  cityId,
+  statusId,
   limit,
   page,
   searchTerm,
-  shopId
+  shopId,
+  dateFrom,
+  dateEnd
 ) => {
-  let matchCriteria = [{ shop_id: shopId }];
+  let matchCriteria = [{ shop_id: Types.ObjectId(shopId) }, { visible: true }];
   if (searchTerm) {
     let regex = new RegExp(RegExp.quote(searchTerm), "gi");
     matchCriteria.push({ displayID: regex });
   }
-  if (sortFields) {
-    for (let sortField of sortFields) {
-      matchCriteria.push(sortField);
-    }
-  }
+  cityId && matchCriteria.push({ city: Types.ObjectId(cityId) });
+  statusId && matchCriteria.push({ statusOrder: Types.ObjectId(statusId) });
+  dateFrom &&
+    dateEnd &&
+    matchCriteria.push({ createdAt: { $gte: dateFrom, $lte: dateEnd } });
   const orders = await Order.aggregate()
-    .lookup({
-      from: "cities",
-      localField: "city",
-      foreignField: "_id",
-      as: "city",
-    })
-    .unwind("$city")
-    .lookup({
-      from: "statusorders",
-      localField: "statusOrder",
-      foreignField: "_id",
-      as: "statusOrder",
-    })
-    .unwind("$statusOrder")
     .match({ $and: matchCriteria })
     .facet({
       paginatedResults: [{ $skip: limit * page }, { $limit: limit }],
@@ -112,8 +107,18 @@ export const getAllOrdersForOneShop = async (
           $count: "count",
         },
       ],
+      totalSum: [
+        {
+          $group: {
+            _id: Date.now(),
+            sumPices: { $sum: "$sum" },
+            sumDelivery: { $sum: "$deliveredPrice" },
+          },
+        },
+      ],
     })
     .unwind("$totalCount")
+    .unwind("$totalSum")
     .unwind("$paginatedResults")
     .unwind("$paginatedResults.products")
     .lookup({
@@ -126,6 +131,7 @@ export const getAllOrdersForOneShop = async (
     .group({
       _id: "$paginatedResults._id",
       totalCount: { $first: "$totalCount" },
+      totalSum: { $first: "$totalSum" },
       products: {
         $push: "$paginatedResults.products",
       },
@@ -140,6 +146,8 @@ export const getAllOrdersForOneShop = async (
     .addFields({
       "orders.products": "$products",
       "orders.totalCount": "$totalCount",
+      "orders.totalSum": "$totalSum",
+      "orders.city": "$city",
     })
     .replaceRoot({
       order: "$orders",

@@ -1,3 +1,6 @@
+import mongoose from "mongoose";
+const { Types } = mongoose;
+
 export const getAllUsers = async (
   User,
   userRole,
@@ -51,26 +54,22 @@ export const getAllUsersForOneShop = async (
   limit,
   page,
   searchTerm,
-  id,
-  region
+  cityId,
+  shopClientsArray
 ) => {
-  console.log(id);
-  let matchCriteria = {
-    $and: [{ "role.value": userRole }, { active: true }, { shop_id: id }],
-  };
+  let matchCriteria = [
+    { "role.value": userRole },
+    { active: true },
+    { _id: { $in: shopClientsArray } },
+  ];
   if (searchTerm) {
     let regex = new RegExp(RegExp.quote(searchTerm), "gi");
-    matchCriteria = {
-      $and: [
-        { "role.value": userRole },
-        { active: true },
-        { shop_id: id },
-        {
-          $or: [{ firstName: regex }, { phone: regex }],
-        },
-      ],
-    };
+    matchCriteria.push({
+      $or: [{ firstName: regex }, { phone: regex }],
+    });
   }
+  cityId && matchCriteria.push({ city: Types.ObjectId(cityId) });
+
   const users = await User.aggregate()
     .lookup({
       from: "roles",
@@ -79,7 +78,7 @@ export const getAllUsersForOneShop = async (
       as: "role",
     })
     .unwind("$role")
-    .match(matchCriteria)
+    .match({ $and: matchCriteria })
     .facet({
       paginatedResults: [{ $skip: limit * page }, { $limit: limit }],
       totalCount: [
