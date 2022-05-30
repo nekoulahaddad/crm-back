@@ -5,6 +5,8 @@ import { Tariffs } from "../models/tariffs";
 import { City } from "../models/city";
 import { User } from "../models/user";
 import { MainCategory } from "../models/mainCategory";
+import { getAllPartners } from "../aggregations/partnerAggregations";
+const { Types } = mongoose;
 
 export const insertShop = async (req, res) => {
   const randomNum = 3;
@@ -53,69 +55,118 @@ export const insertShop = async (req, res) => {
   }
 };
 
-
 export const editMainInformation = async (req, res) => {
-  const { id } = req.params
-  const { name, city, address, phone, mainCategory, weekdays, weekends, description } = req.body
+  const { id } = req.params;
+  const {
+    name,
+    city,
+    address,
+    phone,
+    mainCategory,
+    weekdays,
+    weekends,
+    description,
+  } = req.body;
 
   try {
-
-    await Shop.updateOne({ _id: id }, 
-      { 
+    await Shop.updateOne(
+      { _id: id },
+      {
         $set: {
           name: name,
           city: city,
           address: address,
           mainCategory: mainCategory,
           description: description,
-          'phone.value': phone,
-          'workingHours.weekdays': weekdays,
-          'workingHours.weekends': weekends
-        } 
+          "phone.value": phone,
+          "workingHours.weekdays": weekdays,
+          "workingHours.weekends": weekends,
+        },
       }
-    )
+    );
 
     res.status(200).send({
-      status: 'ok',
-      message: 'edited'
+      status: "ok",
+      message: "edited",
     });
-    
   } catch (error) {
     res.status(500).send({
       status: "error",
       message: error.message,
     });
   }
-}
+};
 
 export const editContactsInformation = async (req, res) => {
-  const { id } = req.params
-  const { emailValue, emailInfo, phoneValue, phoneDescription, sectionInfo } = req.body
+  const { id } = req.params;
+  const { emailValue, emailInfo, phoneValue, phoneDescription, sectionInfo } =
+    req.body;
 
   try {
-    console.log(req.body)
-    await Shop.updateOne({ _id: id }, 
-      { 
+    console.log(req.body);
+    await Shop.updateOne(
+      { _id: id },
+      {
         $set: {
-          'email.value': emailValue,
-          'email.info': emailInfo,
-          'phone.value': phoneValue,
-          'phone.description': phoneDescription,
+          "email.value": emailValue,
+          "email.info": emailInfo,
+          "phone.value": phoneValue,
+          "phone.description": phoneDescription,
           sectionInfo: sectionInfo,
-        } 
+        },
       }
-    )
+    );
 
     res.status(200).send({
-      status: 'ok',
-      message: 'edited'
+      status: "ok",
+      message: "edited",
     });
-    
   } catch (error) {
     res.status(500).send({
       status: "error",
       message: error.message,
     });
   }
+};
 
-}
+export const getPartners = async (req, res) => {
+  let { page, sort_field, sort_direction, limit, searchTerm } = req.query;
+  RegExp.quote = function (str) {
+    return str.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+  };
+  limit = 10;
+  page = 0;
+  try {
+    let partners = await getAllPartners(
+      Shop,
+      sort_field,
+      sort_direction,
+      limit,
+      page,
+      searchTerm,
+      false
+    );
+    if (!partners) {
+      return res.status(404).send({
+        status: "error",
+        message: "Партнёры не найдены",
+      });
+    }
+    partners = partners.map((order) => order.order);
+    res.status(200).send({
+      status: "ok",
+      message: {
+        orders: partners,
+        totalOrders: partners[0] ? partners[0].totalCount.count : 0,
+        totalPages: partners[0]
+          ? Math.ceil(partners[0].totalCount.count / limit)
+          : 0,
+      },
+    });
+  } catch (error) {
+    res.status(500).send({
+      status: "error",
+      message: error.message,
+    });
+  }
+};
