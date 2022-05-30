@@ -167,3 +167,54 @@ export const getPartners = async (req, res) => {
     });
   }
 };
+
+export const deletePartner = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const partner = await Shop.findById({ _id: id });
+
+    if (!partner) {
+      return res.status(404).send({
+        status: "error",
+        message: "Партнёр не найден",
+      });
+    }
+    await partner.remove();
+
+    res.status(200).send({
+      status: "ok",
+      message: "Партнёр успешно удалён",
+    });
+  } catch (error) {
+    res.status(500).send({
+      status: "error",
+      message: error.message,
+    });
+  }
+};
+
+export const getPartnerById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const partner = await Shop.findById({ _id: id });
+
+    if (!partner) {
+      return res.status(404).send({
+        status: "error",
+        message: "Партнёр не найден",
+      });
+    }
+
+    res.status(200).send({
+      status: "ok",
+      message: partner,
+    });
+  } catch (error) {
+    res.status(500).send({
+      status: "error",
+      message: error.message,
+    });
+  }
+};

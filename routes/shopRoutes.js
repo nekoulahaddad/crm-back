@@ -4,6 +4,8 @@ import {
   editMainInformation,
   insertShop,
   getPartners,
+  getPartnerById,
+  deletePartner,
 } from "../controllers/shopController.js";
 const router = express.Router();
 
@@ -11,5 +13,7 @@ router.get("/insertShop", insertShop);
 router.put("/editMainInformation/:id", editMainInformation);
 router.put("/editContactsInformation/:id", editContactsInformation);
 router.get("/all", getPartners);
+router.get("/get/:id", getPartnerById);
+router.get("/delete/:id", deletePartner);
 
 export default router;
