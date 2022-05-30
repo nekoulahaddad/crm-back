@@ -6,7 +6,6 @@ import { City } from "../models/city";
 import { User } from "../models/user";
 import { MainCategory } from "../models/mainCategory";
 import { getAllPartners } from "../aggregations/partnerAggregations";
-const { Types } = mongoose;
 
 export const insertShop = async (req, res) => {
   const randomNum = 3;
@@ -103,7 +102,6 @@ export const editContactsInformation = async (req, res) => {
     req.body;
 
   try {
-    console.log(req.body);
     await Shop.updateOne(
       { _id: id },
       {
@@ -143,8 +141,7 @@ export const getPartners = async (req, res) => {
       sort_direction,
       limit,
       page,
-      searchTerm,
-      false
+      searchTerm
     );
     if (!partners) {
       return res.status(404).send({
@@ -152,12 +149,12 @@ export const getPartners = async (req, res) => {
         message: "Партнёры не найдены",
       });
     }
-    partners = partners.map((order) => order.order);
+    partners = partners.map((partner) => partner.shops);
     res.status(200).send({
       status: "ok",
       message: {
-        orders: partners,
-        totalOrders: partners[0] ? partners[0].totalCount.count : 0,
+        partners: partners,
+        totalPartners: partners[0] ? partners[0].totalCount.count : 0,
         totalPages: partners[0]
           ? Math.ceil(partners[0].totalCount.count / limit)
           : 0,
