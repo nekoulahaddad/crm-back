@@ -7,6 +7,7 @@ const shopSchema = new Schema(
     subDomain: { type: String, required: false, unique: true },
     domain: { type: String, required: false },
     description: { type: String, required: true },
+    visible: { type: Boolean, required: true, default: true },
     seo: {
       title: { type: String, required: false },
       keywords: { type: String, required: false },
@@ -30,13 +31,13 @@ const shopSchema = new Schema(
       weekdays: { type: String, required: false },
       weekends: { type: String, required: false },
     },
-    phone: { 
+    phone: {
       value: { type: String, required: false },
       description: { type: String, required: false },
     },
     email: {
       value: { type: String, required: false },
-      info: { type: String, required: false }
+      info: { type: String, required: false },
     },
     sectionInfo: { type: String, required: false },
     logo: { type: String, required: false },
