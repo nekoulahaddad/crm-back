@@ -17,7 +17,26 @@ mongoose
   .then(() => console.log("the database is ready to use ..."))
   .catch((err) => console.log(err));
 
-app.use(cors({ credentials: true, origin: "http://localhost:3030" }));
+const whitelist = [
+  "http://localhost:3010",
+  "http://localhost:3020",
+  "http://localhost:3030",
+  "https://admin.zumzak.ru",
+  "https://shop.zumzak.ru",
+  "https://clients.zumzak.ru",
+];
+const corsOptions = {
+  credentials: true,
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+};
+
+app.use(cors(corsOptions));
 
 app.use(indexRouter);
 
