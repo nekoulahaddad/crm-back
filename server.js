@@ -18,7 +18,7 @@ mongoose
   .catch((err) => console.log(err));
 
 const whitelist = [
-  "http://localhost:3010",
+  "http://localhost",
   "http://localhost:3020",
   "http://localhost:3030",
   "https://admin.zumzak.ru",
