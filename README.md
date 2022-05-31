@@ -13,7 +13,7 @@ pm2 restart admin_zum
 
 ### Документация по API
 
-Базовый url для запросов - https://admin.zumzak.com/api
+Базовый url для запросов - https://back.zumzak.ru/api
 Ответ сервера - в формате json.
 Ответ может содержать два поля:
 
