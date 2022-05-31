@@ -237,7 +237,7 @@ export const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const user = await User.findById({ _id: id });
+    const user = await User.findById({ _id: id }).populate("city");
 
     if (!user) {
       return res.status(404).send({
