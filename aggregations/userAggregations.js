@@ -34,6 +34,20 @@ export const getAllUsers = async (
     })
     .unwind("$role")
     .match(matchCriteria)
+    .lookup({
+      from: "cities",
+      localField: "city",
+      foreignField: "_id",
+      as: "city",
+    })
+    .unwind("$city")
+    .lookup({
+      from: "countries",
+      localField: "city.country_id",
+      foreignField: "_id",
+      as: "country",
+    })
+    .unwind("$country")
     .sort({ [sort_field]: sort_direction })
     .facet({
       paginatedResults: [{ $skip: limit * page }, { $limit: limit }],
