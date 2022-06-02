@@ -19,6 +19,8 @@ mongoose
 
 const whitelist = [
   "http://localhost",
+  "http://localhost:3000",
+  "http://localhost:3010",
   "http://localhost:3020",
   "http://localhost:3030",
   "https://admin.zumzak.ru",
