@@ -1,3 +1,6 @@
+import mongoose from "mongoose";
+const { Types } = mongoose;
+
 import { usersData } from "../data/users";
 
 import { User } from "../models/user";
@@ -6,8 +9,12 @@ import { Role } from "../models/role";
 import { City } from "../models/city";
 import { CustomID } from "../models/customID";
 import { Shop } from "../models/shop";
+import { Order } from "../models/order";
 
-import { getAllUsers } from "../aggregations/userAggregations";
+import {
+  getAllUsers,
+  getAllUsersForOneShop,
+} from "../aggregations/userAggregations";
 
 export const insertClient = async (req, res) => {
   const user = usersData[4];
@@ -168,8 +175,54 @@ export const getUsersByRole = async (req, res) => {
     }
     res.status(200).send({
       message: {
-        users: users[0].paginatedResults,
-        total_pages: Math.ceil(users[0].totalCount.count / limit),
+        users: users[0] ? users[0].paginatedResults : null,
+        totalUsers: users[0] ? users[0].totalCount.count : 0,
+        totalPages: users[0] ? Math.ceil(users[0].totalCount.count / limit) : 0,
+      },
+    });
+  } catch (error) {
+    res.status(500).send({
+      status: "error",
+      message: error.message,
+    });
+  }
+};
+
+export const getClientsForOneShop = async (req, res) => {
+  let { page, limit, searchTerm, cityId } = req.query;
+  let { shopId } = req.params;
+  let userRole = "client";
+  RegExp.quote = function (str) {
+    return str.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+  };
+  limit = 6;
+  page = 0;
+
+  const shopClientsArray = await Order.find({
+    shop_id: Types.ObjectId(shopId),
+  }).distinct("client");
+
+  try {
+    let users = await getAllUsersForOneShop(
+      User,
+      userRole,
+      limit,
+      page,
+      searchTerm,
+      cityId,
+      shopClientsArray
+    );
+    if (!users) {
+      return res.status(404).send({
+        status: "error",
+        message: "Пользователи не найдены",
+      });
+    }
+    res.status(200).send({
+      message: {
+        users: users[0] ? users[0].paginatedResults : null,
+        totalUsers: users[0] ? users[0].totalCount.count : 0,
+        totalPages: users[0] ? Math.ceil(users[0].totalCount.count / limit) : 0,
       },
     });
   } catch (error) {
@@ -184,7 +237,7 @@ export const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const user = await User.findById({ _id: id });
+    const user = await User.findById({ _id: id }).populate("city");
 
     if (!user) {
       return res.status(404).send({

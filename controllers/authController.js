@@ -31,6 +31,8 @@ export const loginUser = async (req, res) => {
       .status(200)
       .cookie("refreshToken", userInfo.refreshToken, {
         httpOnly: true,
+        sameSite: "none",
+        secure: true,
       })
       .send({
         status: "ok",

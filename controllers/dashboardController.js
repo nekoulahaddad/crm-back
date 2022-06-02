@@ -3,18 +3,14 @@ import { User } from "../models/user";
 import { Product } from "../models/product";
 import { StatusOrder } from "../models/statusOrder";
 const mongoose = require("mongoose");
-
-const now = new Date();
-const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-const yesterday = new Date(
-  now.getFullYear(),
-  now.getMonth(),
-  now.getDate() - 1
-);
-const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 2);
-const currentMonthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-const previousMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 2);
-const previousMonthEnd = new Date(now.getFullYear(), now.getMonth(), 1);
+import {
+  today,
+  yesterday,
+  currentMonthStart,
+  currentMonthEnd,
+  previousMonthStart,
+  previousMonthEnd,
+} from "../utils/timeHelpers";
 
 export const getDataForDashboard = async (req, res) => {
   const { shopId } = req.query;

@@ -5,6 +5,18 @@ import { City } from "../models/city";
 import { Product } from "../models/product";
 import { CustomID } from "../models/customID";
 import { Order } from "../models/order";
+import {
+  getAllOrders,
+  getAllOrdersForOneShop,
+} from "../aggregations/orderAggregations";
+import {
+  today,
+  currentMonthStart,
+  currentMonthEnd,
+  currentWeekStart,
+  tomorrow,
+} from "../utils/timeHelpers";
+import { Shop } from "../models/shop";
 
 export const insertOrders = async (req, res) => {
   const randomNum = 0;
@@ -19,6 +31,7 @@ export const insertOrders = async (req, res) => {
     const orderClient = await User.findOne({ firstName: "Конcтантин" });
     const orderCity = await City.findOne({ name: "Москва" });
     const statusOrder = await StatusOrder.findOne({ value: "created" });
+    const shop = await Shop.find({}).limit(1);
 
     const productsObject = products.map((product) => {
       return {
@@ -29,8 +42,10 @@ export const insertOrders = async (req, res) => {
     });
     order.products = productsObject;
     order.statusOrder = statusOrder._id;
+
     order.city = orderCity._id;
     order.client = orderClient._id;
+    order.shop_id = shop[0]._id;
     order.displayID = displayID
       ? ("0000000" + displayID.count).slice(-7)
       : "00000000";
@@ -52,67 +67,145 @@ export const insertOrders = async (req, res) => {
 
 export const getOrders = async (req, res) => {
   let { page, sort_field, sort_direction, limit, searchTerm } = req.query;
-  let orders = null;
-  let countOrders = "";
+  RegExp.quote = function (str) {
+    return str.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+  };
+  limit = 10;
+  page = 0;
+  let orders = {};
   try {
-    if (!searchTerm) {
-      countOrders = await Order.find({}).count();
-      orders = await Order.find({})
-        .limit(limit)
-        .skip(limit * page)
-        .sort({ [sort_field]: sort_direction })
-        .exec();
-    } else {
-      countOrders = await Order.find({ displayID: searchTerm }).count();
-      orders = await Order.find({ displayID: searchTerm })
-        .limit(limit)
-        .skip(limit * page)
-        .sort({ [sort_field]: sort_direction })
-        .exec();
-    }
+    orders = await getAllOrders(
+      Order,
+      sort_field,
+      sort_direction,
+      limit,
+      page,
+      searchTerm,
+      false
+    );
     if (!orders) {
       return res.status(404).send({
         status: "error",
         message: "Заказы не найдены",
       });
     }
+    orders = orders.map((order) => order.order);
     res.status(200).send({
       status: "ok",
-      message: { orders, total_pages: Math.ceil(countOrders / limit) },
+      message: {
+        orders: orders,
+        totalOrders: orders[0] ? orders[0].totalCount.count : 0,
+        totalPages: orders[0]
+          ? Math.ceil(orders[0].totalCount.count / limit)
+          : 0,
+      },
     });
   } catch (error) {
     res.status(500).send({
       status: "error",
-      message: error,
+      message: error.message,
+    });
+  }
+};
+
+export const getOrdersForOneShop = async (req, res) => {
+  let { page, cityId, statusId, limit, searchTerm, dateFilter } = req.query;
+  const { shopId } = req.params;
+  let dateFrom =
+    dateFilter === "day"
+      ? today
+      : dateFilter === "month"
+      ? currentMonthStart
+      : dateFilter === "week"
+      ? currentWeekStart
+      : null;
+
+  let dateEnd = dateFilter === "month" ? currentMonthEnd : tomorrow;
+
+  limit = 10;
+  page = 0;
+  RegExp.quote = function (str) {
+    return str.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+  };
+  limit = 10;
+  page = 0;
+  let orders = {};
+  try {
+    orders = await getAllOrdersForOneShop(
+      Order,
+      cityId,
+      statusId,
+      limit,
+      page,
+      searchTerm,
+      shopId,
+      dateFrom,
+      dateEnd
+    );
+    if (!orders) {
+      return res.status(404).send({
+        status: "error",
+        message: "Заказы не найдены",
+      });
+    }
+    orders = orders.map((order) => order.order);
+    res.status(200).send({
+      status: "ok",
+      message: {
+        orders: orders,
+        totalOrders: orders[0] ? orders[0].totalCount.count : 0,
+        sumPices: orders[0] ? orders[0].totalSum.sumPices : 0,
+        sumDelivery: orders[0] ? orders[0].totalSum.sumDelivery : 0,
+        totalPages: orders[0]
+          ? Math.ceil(orders[0].totalCount.count / limit)
+          : 0,
+      },
+    });
+  } catch (error) {
+    res.status(500).send({
+      status: "error",
+      message: error.message,
     });
   }
 };
 
 export const getOrdersByClientId = async (req, res) => {
-  const { id } = req.params;
   let { page, sort_field, sort_direction, limit } = req.query;
+  const { clientId } = req.params;
+  limit = 10;
+  page = 0;
+  let orders = {};
   try {
-    const countOrders = await Order.find({}).count();
-    const orders = await Order.find({ "Order._id": id })
-      .limit(limit)
-      .skip(limit * page)
-      .sort({ [sort_field]: sort_direction })
-      .exec();
-
+    orders = await getAllOrders(
+      Order,
+      sort_field,
+      sort_direction,
+      limit,
+      page,
+      false,
+      clientId
+    );
     if (!orders) {
       return res.status(404).send({
         status: "error",
         message: "Заказы не найдены",
       });
     }
+    orders = orders.map((order) => order.order);
     res.status(200).send({
       status: "ok",
-      message: { orders, total_orders_count: Math.ceil(countOrders / limit) },
+      message: {
+        orders: orders,
+        totalOrders: orders[0] ? orders[0].totalCount.count : 0,
+        totalPages: orders[0]
+          ? Math.ceil(orders[0].totalCount.count / limit)
+          : 0,
+      },
     });
   } catch (error) {
     res.status(500).send({
       status: "error",
-      message: error,
+      message: error.message,
     });
   }
 };
@@ -134,6 +227,48 @@ export const deleteOrder = async (req, res) => {
     res.status(200).send({
       status: "ok",
       message: "Заказ успешно удалён",
+    });
+  } catch (error) {
+    res.status(500).send({
+      status: "error",
+      message: error.message,
+    });
+  }
+};
+
+export const getOrderById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const order = await Order.findById({ _id: id });
+
+    if (!order) {
+      return res.status(404).send({
+        status: "error",
+        message: "Заказ не найден",
+      });
+    }
+
+    res.status(200).send({
+      status: "ok",
+      message: order,
+    });
+  } catch (error) {
+    res.status(500).send({
+      status: "error",
+      message: error.message,
+    });
+  }
+};
+
+export const editOrder = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { data } = req.body;
+    await Order.updateOne({ _id: id }, { $set: data });
+    res.status(200).send({
+      status: "ok",
+      message: "информация о заказе успешно изменена",
     });
   } catch (error) {
     res.status(500).send({
