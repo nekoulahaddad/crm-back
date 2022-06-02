@@ -14,7 +14,7 @@ const orderSchema = new Schema(
     ],
     shop_id: { type: Types.ObjectId, ref: "Shop" },
     client: { type: Types.ObjectId, ref: "user" },
-    city: { type: Types.ObjectId, ref: "city" },
+    city: { type: Types.ObjectId, ref: "City" },
     address: { type: String, required: false },
     paidAt: { type: Date, required: true },
     sum: { type: Number, required: true },

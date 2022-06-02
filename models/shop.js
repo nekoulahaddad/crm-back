@@ -41,7 +41,7 @@ const shopSchema = new Schema(
     },
     sectionInfo: { type: String, required: false },
     logo: { type: String, required: false },
-    city: { type: Types.ObjectId, ref: "city", required: true },
+    city: { type: Types.ObjectId, ref: "City", required: true },
     address: { type: String, required: false },
     favicon: { type: String, required: false },
     tariffs: [

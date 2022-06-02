@@ -9,6 +9,8 @@ import categoryRoutes from "../routes/categoryRoutes";
 import statusOrderRoutes from "../routes/statusOrderRoutes";
 import questionAnswer from "../routes/questionAnswerRoutes";
 import dasboardRoutes from "../routes/dashboardRoutes"
+import reviewRoutes from "../routes/reviewRoutes"
+import pendingStatusRoutes from "../routes/pendingStatusRoutes"
 import shopRoutes from "../routes/shopRoutes"
 import requisitesRoutes from "../routes/requisitesRoutes"
 
@@ -21,6 +23,8 @@ router.use("/api/category", categoryRoutes)
 router.use("/api/statusOrder/", statusOrderRoutes)
 router.use("/api/questionAnswer/", questionAnswer)
 router.use("/api/dashboard/", dasboardRoutes)
+router.use("/api/review/", reviewRoutes)
+router.use("/api/pendingStatus/", pendingStatusRoutes)
 router.use("/api/shop/", shopRoutes)
 router.use("/api/requisites/", requisitesRoutes)
 
