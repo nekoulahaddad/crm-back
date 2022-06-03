@@ -256,6 +256,8 @@ export const getDataForDashboard = async (req, res) => {
       canceledOrdersCount,
       totalProductsCount,
       income,
+      todaySales,
+      currentMonthSales
     };
 
     res.send({
