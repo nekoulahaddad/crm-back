@@ -13,6 +13,7 @@ import reviewRoutes from "../routes/reviewRoutes"
 import pendingStatusRoutes from "../routes/pendingStatusRoutes"
 import shopRoutes from "../routes/shopRoutes"
 import requisitesRoutes from "../routes/requisitesRoutes"
+import productRoutes from "../routes/productRoutes"
 
 router.use("/api/auth", authRoutes)
 router.use("/api/user", userRoutes)
@@ -27,5 +28,6 @@ router.use("/api/review/", reviewRoutes)
 router.use("/api/pendingStatus/", pendingStatusRoutes)
 router.use("/api/shop/", shopRoutes)
 router.use("/api/requisites/", requisitesRoutes)
+router.use("/api/product/", productRoutes)
 
 export default router;

@@ -29,3 +29,74 @@ export const insertProduct = async (req, res) => {
     });
   }
 };
+
+export const changeSeo = async (req, res) => {
+  const { id } = req.params
+  const { title, keywords, description } = req.body
+
+  try {
+    const productForChange = await Product.findById(id)
+    if (!productForChange) return res.status(500).send({ 
+      status: "error", 
+      message: "Такого магазина не существует!" 
+    })
+
+    await Product.findByIdAndUpdate(
+      id,
+      { $set: {
+          seo: {
+            title,
+            keywords,
+            description
+          }
+        }
+      }
+    )
+
+    const productForSend = await Product.findById(id)
+    res.send({
+      status: "ok",
+      data: productForSend
+    })
+  } catch (error) {
+    res.status(500).send({
+      status: "error",
+      message: error.message
+    })
+  }
+};
+
+export const clearSeo = async (req, res) => {
+  const { id } = req.params
+
+  try {
+    const productForChange = await Product.findById(id)
+    if (!productForChange) return res.status(500).send({ 
+      status: "error", 
+      message: "Такого товара не существует!" 
+    })
+
+    await Product.findByIdAndUpdate(
+      id,
+      { $set: {
+          seo: {
+            title: "",
+            keywords:"",
+            description: "",
+          }
+        }
+      }
+    )
+
+    res.send({
+      status: "ok",
+      message: "SEO cleared!"
+    })
+
+  } catch (error) {
+    res.status(500).send({
+      status: "error",
+      message: error.message
+    })
+  }
+};

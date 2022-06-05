@@ -218,3 +218,74 @@ export const getPartnerById = async (req, res) => {
     });
   }
 };
+
+export const changeSeo = async (req, res) => {
+  const { id } = req.params
+  const { title, keywords, description } = req.body
+
+  try {
+    const shopForChange = await Shop.findById(id)
+    if (!shopForChange) return res.status(500).send({ 
+      status: "error", 
+      message: "Такого магазина не существует!" 
+    })
+
+    await Shop.findByIdAndUpdate(
+      id,
+      { $set: {
+          seo: {
+            title,
+            keywords,
+            description
+          }
+        }
+      }
+    )
+
+    const shopForSend = await Shop.findById(id)
+    res.send({
+      status: "ok",
+      data: shopForSend
+    })
+  } catch (error) {
+    res.status(500).send({
+      status: "error",
+      message: error.message
+    })
+  }
+};
+
+export const clearSeo = async (req, res) => {
+  const { id } = req.params
+
+  try {
+    const shopForChange = await Shop.findById(id)
+    if (!shopForChange) return res.status(500).send({ 
+      status: "error", 
+      message: "Такой категории не существует!" 
+    })
+
+    await Shop.findByIdAndUpdate(
+      id,
+      { $set: {
+          seo: {
+            title: "",
+            keywords:"",
+            description: "",
+          }
+        }
+      }
+    )
+
+    res.send({
+      status: "ok",
+      message: "SEO cleared!"
+    })
+
+  } catch (error) {
+    res.status(500).send({
+      status: "error",
+      message: error.message
+    })
+  }
+};

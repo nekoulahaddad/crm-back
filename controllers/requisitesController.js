@@ -1,5 +1,22 @@
 import { Requisites } from "../models/requisites";
 
+export const getRequisites = async (req, res) => {
+  const {id} = req.params
+
+  try {
+    const requisites =  await Requisites.find({ shop_id: id });
+   
+    res.status(200).send({
+      status: 'ok',
+      message: requisites
+    });
+  } catch (error) {
+    res.status(500).send({
+      status: "error",
+      message: error.message,
+    });
+  }
+}
 
 
 export const editRequisites = async (req, res) => {
