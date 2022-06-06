@@ -1,6 +1,7 @@
 import config from "../config/index.js";
 const { JWT_SECRET } = config;
 import jwt from "jsonwebtoken";
+import { User } from "../models/user.js";
 
 export const auth = async (req, res, next) => {
   try {
@@ -13,7 +14,7 @@ export const auth = async (req, res, next) => {
     }
     const user = await jwt.verify(token, JWT_SECRET);
     req.token = token;
-    req.user = user;
+    req.user = user ? await User.findById(user._id) : null;
     return next();
   } catch (error) {
     res.send({
