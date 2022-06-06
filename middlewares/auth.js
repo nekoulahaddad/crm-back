@@ -11,8 +11,9 @@ export const auth = async (req, res, next) => {
         message: "Токен не найден",
       });
     }
-    jwt.verify(token, JWT_SECRET);
+    const user = await jwt.verify(token, JWT_SECRET);
     req.token = token;
+    req.user = user;
     return next();
   } catch (error) {
     res.send({

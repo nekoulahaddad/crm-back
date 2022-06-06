@@ -99,5 +99,7 @@ export const logoutUser = async (req, res) => {
 };
 
 export const testAuth = (req, res) => {
-  res.status(200).send({ status: "ok", message: req.token });
+  res
+    .status(200)
+    .send({ status: "ok", message: { user: req.user, token: req.token } });
 };
