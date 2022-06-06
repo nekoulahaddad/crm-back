@@ -10,6 +10,7 @@ import config from "./config/index";
 const app = express();
 const db = config.MONGO_URI;
 
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParser());
 mongoose
@@ -38,7 +39,8 @@ const corsOptions = {
   },
 };
 
-app.use(cors(corsOptions));
+//app.use(cors(corsOptions));
+app.use(cors({ credentials: true }));
 
 app.use(indexRouter);
 
