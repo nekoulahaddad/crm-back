@@ -101,5 +101,8 @@ export const logoutUser = async (req, res) => {
 export const testAuth = (req, res) => {
   res
     .status(200)
-    .send({ status: "ok", message: { user: req.user, token: req.token } });
+    .send({
+      status: "ok",
+      message: { user: req.user, token: req.token, shop_id: req.shop_id },
+    });
 };
