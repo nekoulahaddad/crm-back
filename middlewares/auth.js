@@ -14,7 +14,9 @@ export const auth = async (req, res, next) => {
     }
     const user = await jwt.verify(token, JWT_SECRET);
     req.token = token;
-    req.user = user ? await User.findById(user._id) : null;
+    const userObject = user ? await User.findById(user._id) : null;
+    req.user = userObject;
+    req.shop_id = userObject.shop_id ? userObject.shop_id : null;
     return next();
   } catch (error) {
     res.send({
