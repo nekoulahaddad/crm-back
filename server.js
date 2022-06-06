@@ -40,7 +40,7 @@ const corsOptions = {
 };
 
 //app.use(cors(corsOptions));
-app.use(cors({ credentials: true, origin: "*" }));
+app.use(cors({ credentials: true }));
 
 app.use(indexRouter);
 
