@@ -21,7 +21,7 @@ export const auth = async (req, res, next) => {
   } catch (error) {
     res.send({
       status: 401,
-      message: "Токен истёк",
+      message: error.message, //"Токен истёк",
     });
   }
 };
