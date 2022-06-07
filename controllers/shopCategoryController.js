@@ -43,3 +43,24 @@ export const toggleVisible = async (req, res) => {
     });
   }
 };
+
+export const deleteCategory = async (req, res) => {
+  const {
+    body: { id },
+    shop_id,
+  } = req;
+
+  try {
+    await ShopCategory.findOneAndDelete({
+      _id: id,
+      shop: shop_id,
+    });
+
+    res.sendStatus(200);
+  } catch (error) {
+    res.status(500).send({
+      status: "error",
+      message: error.message
+    });
+  }
+};
