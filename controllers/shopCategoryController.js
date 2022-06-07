@@ -18,7 +18,7 @@ export const toggleVisible = async (req, res) => {
 
   try {
     const category = await ShopCategory.findOne({
-      "category._id": { $in: [id] },
+      _id: id,
       shop: shop_id,
     });
 
