@@ -15,9 +15,9 @@ export const auth = async (req, res, next) => {
     const { _id } = await jwt.verify(token, JWT_SECRET);
     const user = await User.findOne({
       _id: _id,
-      active: true,
+      active: false,
     }).populate("role");
-    if (!user) IamAnError;
+    if (!user) throw new Error("Ошибка");
     req.token = token;
     req.user = user;
     return next();
