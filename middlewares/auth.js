@@ -15,9 +15,9 @@ export const auth = async (req, res, next) => {
     const { _id } = await jwt.verify(token, JWT_SECRET);
     const user = await User.findOne({
       _id: _id,
-      active: false,
+      active: true,
     }).populate("role");
-    if (!user) IamAnError.replace("-", "");
+    if (!user) IamAnError;
     req.token = token;
     req.user = user;
     return next();
