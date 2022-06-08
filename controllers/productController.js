@@ -35,14 +35,12 @@ export const changeSeo = async (req, res) => {
   const { title, keywords, description } = req.body;
 
   try {
-
     const productForChange = await Product.findById(id);
     if (!productForChange)
       return res.status(500).send({
         status: "error",
         message: "Такого магазина не существует!",
       });
-
 
     await Product.findByIdAndUpdate(id, {
       $set: {
@@ -71,12 +69,12 @@ export const clearSeo = async (req, res) => {
   const { id } = req.params;
 
   try {
-
-    const productForChange = await Product.findById(id)
-    if (!productForChange) return res.status(500).send({
-      status: "error",
-      message: "Такого товара не существует!"
-    })
+    const productForChange = await Product.findById(id);
+    if (!productForChange)
+      return res.status(500).send({
+        status: "error",
+        message: "Такого товара не существует!",
+      });
 
     await Product.findByIdAndUpdate(id, {
       $set: {
@@ -102,7 +100,6 @@ export const clearSeo = async (req, res) => {
 
 export const getProductById = async (req, res) => {
   const { id } = req.params;
-
   try {
     const product = await Product.findById(id).populate("category_id");
     if (!product) {
@@ -112,20 +109,18 @@ export const getProductById = async (req, res) => {
       });
     }
     if (req.user) {
-      await User.update(
+      const watchedProductsNewArray =
+        req.user.watchedProducts.length > 2
+          ? req.user.watchedProducts.splice(-2, 2)
+          : req.user.watchedProducts;
+      watchedProductsNewArray.push(product._id);
+
+      await User.findOneAndUpdate(
         {
-          $expr: {
-            $lte: [
-              {
-                $size: "$watchedProducts",
-              },
-              10,
-            ],
-          },
           _id: req.user._id,
           watchedProducts: { $ne: product._id },
         },
-        { $push: { watchedProducts: product._id } }
+        { watchedProducts: watchedProductsNewArray }
       );
     }
     res.status(200).send({
@@ -156,4 +151,3 @@ export const setIsRecommended = async (req, res) => {
     });
   }
 };
-
