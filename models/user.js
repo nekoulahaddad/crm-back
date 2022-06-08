@@ -35,7 +35,7 @@ userSchema.methods.generateAuthToken = function () {
   const user = this;
   const secret = JWT_SECRET;
   const token = jwt.sign({ _id: user._id }, secret, {
-    expiresIn: "300s",
+    expiresIn: process.env.NODE_ENV === "development" ? "5 days" : "300s",
   });
   user.accessToken = token;
 };

@@ -38,7 +38,6 @@ const corsOptions = {
     }
   },
 };
-
 //app.use(cors(corsOptions));
 app.use(cors({ credentials: true, origin: [whitelist] }));
 

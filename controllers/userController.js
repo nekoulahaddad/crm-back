@@ -125,6 +125,40 @@ export const insertPartner = async (req, res) => {
 
 export const addClient = async (req, res) => {
   try {
+    const { data } = req.body;
+
+    const userRole = await Role.findOne({ value: "client" });
+    const newPassword = new Password({
+      //user_id: newUser._id,
+      password: "12345678",
+      email: data.email,
+    });
+    const counter = await CustomID.findOneAndUpdate(
+      { name: "clientsCounter" },
+      { $inc: { count: 1 } },
+      { upsert: true }
+    );
+    const newClient = {
+      ...data,
+      role: userRole._id,
+      displayID: counter ? ("0000000" + counter.count).slice(-7) : "00000000",
+    };
+    const clients = await User.create(newClient);
+
+    res.status(200).send({
+      status: "ok",
+      message: clients,
+    });
+  } catch (error) {
+    res.status(500).send({
+      status: "error",
+      message: error.message,
+    });
+  }
+};
+
+export const addPartner = async (req, res) => {
+  try {
     const counter = await CustomID.findOneAndUpdate(
       { name: "clientsCounter" },
       { $inc: { count: 1 } },
