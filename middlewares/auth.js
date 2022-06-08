@@ -5,7 +5,7 @@ import { User } from "../models/user.js";
 
 export const auth = async (req, res, next) => {
   try {
-    const token = req.headers["authorization"].split(" ")[1];
+    const token = req.headers["authorization"];
     if (!token) {
       return res.send({
         status: 403,
@@ -15,7 +15,7 @@ export const auth = async (req, res, next) => {
     const { _id } = await jwt.verify(token, JWT_SECRET);
     const user = await User.findOne({
       _id: _id,
-      active: false,
+      active: true,
     }).populate("role");
     if (!user) throw new Error("Ошибка");
     req.token = token;
@@ -45,5 +45,28 @@ export const checkPartner = async (req, res, next) => {
       status: 401,
       message: error.message,
     });
+  }
+};
+
+export const getUserInfo = async (req, res, next) => {
+  try {
+    const token = req.headers["authorization"].split(" ")[1];
+    if (!token) {
+      return res.send({
+        status: 403,
+        message: "Токен не найден",
+      });
+    }
+    const { _id } = await jwt.verify(token, JWT_SECRET);
+    const user = await User.findOne({
+      _id: _id,
+      active: true,
+    }).populate("role");
+    if (!user) throw new Error("Ошибка");
+    req.token = token;
+    req.user = user;
+    return next();
+  } catch (error) {
+    return next();
   }
 };
