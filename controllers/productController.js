@@ -100,6 +100,7 @@ export const clearSeo = async (req, res) => {
 
 export const getProductById = async (req, res) => {
   const { id } = req.params;
+  const NUMBER_OF_WATCHED_PRODUCTS = 9;
   try {
     const product = await Product.findById(id).populate("category_id");
     if (!product) {
@@ -110,8 +111,11 @@ export const getProductById = async (req, res) => {
     }
     if (req.user) {
       const watchedProductsNewArray =
-        req.user.watchedProducts.length > 2
-          ? req.user.watchedProducts.splice(-2, 2)
+        req.user.watchedProducts.length > NUMBER_OF_WATCHED_PRODUCTS
+          ? req.user.watchedProducts.splice(
+              -NUMBER_OF_WATCHED_PRODUCTS,
+              NUMBER_OF_WATCHED_PRODUCTS
+            )
           : req.user.watchedProducts;
       watchedProductsNewArray.push(product._id);
 
