@@ -31,8 +31,9 @@ const productSchema = new Schema(
     purchasePrice: { type: Number, required: false },
     shop_id: { type: Types.ObjectId, ref: "shop" },
     quantity: { type: Number, required: true },
-    oftenSearch: { type: Array, default: undefined },
-    recommended: { type: Array, default: undefined },
+    searchCounter: { type: Number, default: 0 },
+    isRecommended: { type: Boolean, default: false },
+    isPopular: { type: Boolean, default: false },
   },
   {
     timestamps: true,
