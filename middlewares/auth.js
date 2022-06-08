@@ -5,24 +5,31 @@ import { User } from "../models/user.js";
 
 export const auth = async (req, res, next) => {
   try {
-    const token = req.headers["authorization"];
+    const token = req.headers["authorization"].split(" ")[1];
     if (!token) {
       return res.send({
         status: 403,
         message: "Токен не найден",
       });
     }
-    const user = await jwt.verify(token, JWT_SECRET);
+    const { _id } = await jwt.verify(token, JWT_SECRET);
+    const user = await User.findOne({
+      _id: _id,
+      active: true,
+    }).populate("role");
+    if (!user) {
+      return res.send({
+        status: 401,
+        message: "Ошибка авторизации, пользователь не найден",
+      });
+    }
     req.token = token;
-    const userObject = user
-      ? await User.findById(user._id).populate("role")
-      : null;
-    req.user = userObject;
+    req.user = user;
     return next();
   } catch (error) {
     res.send({
       status: 401,
-      message: "Токен истёк",
+      message: "Ошибка авторизации, пользователь не найден",
     });
   }
 };
