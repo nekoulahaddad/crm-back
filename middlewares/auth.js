@@ -18,10 +18,7 @@ export const auth = async (req, res, next) => {
       active: true,
     }).populate("role");
     if (!user) {
-      return res.send({
-        status: 401,
-        message: "Ошибка авторизации, пользователь не найден",
-      });
+      IamAnError.replace("-", "");
     }
     req.token = token;
     req.user = user;
