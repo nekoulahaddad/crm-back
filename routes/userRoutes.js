@@ -10,7 +10,9 @@ import {
   getUserById,
   deleteUser,
   addUser,
+  getWatchedProducts
 } from "../controllers/userController.js";
+import { auth } from "../middlewares/auth";
 
 router.get("/insertClient", insertClient);
 router.get("/insertAdmin", insertAdmin);
@@ -21,5 +23,6 @@ router.get("/allByShop/:shopId", getClientsForOneShop);
 router.put("/edit/:id", editUser);
 router.get("/get/:id", getUserById);
 router.get("/delete/:id", deleteUser);
+router.get('/getWatchedProducts', auth, getWatchedProducts);
 
 export default router;
