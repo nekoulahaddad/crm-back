@@ -3,7 +3,7 @@ import { productsData } from "../data/products";
 import { Category } from "../models/category";
 import { MainCategory } from "../models/mainCategory";
 import { Product } from "../models/product";
-
+import { User } from "../models/user";
 export const insertProduct = async (req, res) => {
   const randomNum = 0;
   const product = productsData[randomNum];
@@ -31,72 +31,109 @@ export const insertProduct = async (req, res) => {
 };
 
 export const changeSeo = async (req, res) => {
-  const { id } = req.params
-  const { title, keywords, description } = req.body
+  const { id } = req.params;
+  const { title, keywords, description } = req.body;
 
   try {
-    const productForChange = await Product.findById(id)
-    if (!productForChange) return res.status(500).send({ 
-      status: "error", 
-      message: "Такого магазина не существует!" 
-    })
+    const productForChange = await Product.findById(id);
+    if (!productForChange)
+      return res.status(500).send({
+        status: "error",
+        message: "Такого магазина не существует!",
+      });
 
-    await Product.findByIdAndUpdate(
-      id,
-      { $set: {
-          seo: {
-            title,
-            keywords,
-            description
-          }
-        }
-      }
-    )
+    await Product.findByIdAndUpdate(id, {
+      $set: {
+        seo: {
+          title,
+          keywords,
+          description,
+        },
+      },
+    });
 
-    const productForSend = await Product.findById(id)
+    const productForSend = await Product.findById(id);
     res.send({
       status: "ok",
-      data: productForSend
-    })
+      data: productForSend,
+    });
   } catch (error) {
     res.status(500).send({
       status: "error",
-      message: error.message
-    })
+      message: error.message,
+    });
   }
 };
 
 export const clearSeo = async (req, res) => {
-  const { id } = req.params
+  const { id } = req.params;
 
   try {
-    const productForChange = await Product.findById(id)
-    if (!productForChange) return res.status(500).send({ 
-      status: "error", 
-      message: "Такого товара не существует!" 
-    })
+    const productForChange = await Product.findById(id);
+    if (!productForChange)
+      return res.status(500).send({
+        status: "error",
+        message: "Такого товара не существует!",
+      });
 
-    await Product.findByIdAndUpdate(
-      id,
-      { $set: {
-          seo: {
-            title: "",
-            keywords:"",
-            description: "",
-          }
-        }
-      }
-    )
+    await Product.findByIdAndUpdate(id, {
+      $set: {
+        seo: {
+          title: "",
+          keywords: "",
+          description: "",
+        },
+      },
+    });
 
     res.send({
       status: "ok",
-      message: "SEO cleared!"
-    })
-
+      message: "SEO cleared!",
+    });
   } catch (error) {
     res.status(500).send({
       status: "error",
-      message: error.message
-    })
+      message: error.message,
+    });
+  }
+};
+
+export const getProductById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const product = await Product.findById(id).populate("category_id");
+    if (!product) {
+      return res.status(404).send({
+        status: "error",
+        message: "Тавар не найден",
+      });
+    }
+    if (req.user) {
+      await User.update(
+        {
+          $expr: {
+            $lte: [
+              {
+                $size: "$watchedProducts",
+              },
+              10,
+            ],
+          },
+          _id: req.user._id,
+          watchedProducts: { $ne: product._id },
+        },
+        { $push: { watchedProducts: product._id } }
+      );
+    }
+    res.status(200).send({
+      status: "ok",
+      message: product,
+    });
+  } catch (error) {
+    res.status(500).send({
+      status: "error",
+      message: error.message,
+    });
   }
 };
