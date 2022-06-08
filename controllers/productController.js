@@ -36,9 +36,9 @@ export const changeSeo = async (req, res) => {
 
   try {
     const productForChange = await Product.findById(id)
-    if (!productForChange) return res.status(500).send({ 
-      status: "error", 
-      message: "Такого магазина не существует!" 
+    if (!productForChange) return res.status(500).send({
+      status: "error",
+      message: "Такого магазина не существует!"
     })
 
     await Product.findByIdAndUpdate(
@@ -71,9 +71,9 @@ export const clearSeo = async (req, res) => {
 
   try {
     const productForChange = await Product.findById(id)
-    if (!productForChange) return res.status(500).send({ 
-      status: "error", 
-      message: "Такого товара не существует!" 
+    if (!productForChange) return res.status(500).send({
+      status: "error",
+      message: "Такого товара не существует!"
     })
 
     await Product.findByIdAndUpdate(
@@ -100,3 +100,21 @@ export const clearSeo = async (req, res) => {
     })
   }
 };
+
+export const setIsRecommended = async (req, res) => {
+  const {
+    body: { id, isRecommended },
+    shop_id,
+  } = req;
+
+  try {
+    await Product.findOneAndUpdate({ _id: id, shop_id }, { isRecommended });
+    return res.sendStatus(200);
+  } catch (error) {
+    res.status(500).send({
+      status: "error",
+      message: error.message,
+    });
+  }
+};
+
