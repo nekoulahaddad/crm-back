@@ -137,3 +137,20 @@ export const getProductById = async (req, res) => {
     });
   }
 };
+
+export const setIsRecommended = async (req, res) => {
+  const {
+    body: { id, isRecommended },
+    shop_id,
+  } = req;
+
+  try {
+    await Product.findOneAndUpdate({ _id: id, shop_id }, { isRecommended });
+    return res.sendStatus(200);
+  } catch (error) {
+    res.status(500).send({
+      status: "error",
+      message: error.message,
+    });
+  }
+};
