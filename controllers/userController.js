@@ -15,6 +15,7 @@ import {
   getAllUsers,
   getAllUsersForOneShop,
 } from "../aggregations/userAggregations";
+import {Product} from "../models/product";
 
 export const insertClient = async (req, res) => {
   const user = usersData[4];
@@ -336,3 +337,22 @@ export const deleteUser = async (req, res) => {
     });
   }
 };
+
+export const getWatchedProducts = async (req, res) => {
+  try {
+    const products = await Product.find({
+      _id: { $in: req.user.watchedProducts },
+    }).populate("category");
+
+    res.status(200).send({
+      status: "ok",
+      message: products,
+    });
+  } catch (error) {
+    res.status(500).send({
+      status: "error",
+      message: error,
+    });
+  }
+};
+
