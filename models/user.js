@@ -24,6 +24,7 @@ const userSchema = new Schema(
     refreshToken: { type: String, required: false },
     city: { type: Types.ObjectId, ref: "City" },
     shop_id: { type: Types.ObjectId, ref: "Shop" },
+    watchedProducts: [{ type: Types.ObjectId, ref: "Product" }],
   },
   {
     timestamps: true,
