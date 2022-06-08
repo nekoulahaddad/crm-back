@@ -100,7 +100,10 @@ export const clearSeo = async (req, res) => {
 
 export const getProductById = async (req, res) => {
   const { id } = req.params;
+<<<<<<< HEAD
   const NUMBER_OF_WATCHED_PRODUCTS = 9;
+=======
+>>>>>>> 4193248 (fix-limit-watchedProducts)
   try {
     const product = await Product.findById(id).populate("category_id");
     if (!product) {
@@ -111,6 +114,7 @@ export const getProductById = async (req, res) => {
     }
     if (req.user) {
       const watchedProductsNewArray =
+<<<<<<< HEAD
         req.user.watchedProducts.length > NUMBER_OF_WATCHED_PRODUCTS
           ? req.user.watchedProducts.splice(0, NUMBER_OF_WATCHED_PRODUCTS)
           : req.user.watchedProducts;
@@ -118,12 +122,22 @@ export const getProductById = async (req, res) => {
         (ele) => ele.toString() !== product._id.toString()
       );
       filteredProductsArray.unshift(product._id);
+=======
+        req.user.watchedProducts.length > 2
+          ? req.user.watchedProducts.splice(-2, 2)
+          : req.user.watchedProducts;
+      watchedProductsNewArray.push(product._id);
+>>>>>>> 4193248 (fix-limit-watchedProducts)
 
       await User.findOneAndUpdate(
         {
           _id: req.user._id,
         },
+<<<<<<< HEAD
         { watchedProducts: filteredProductsArray }
+=======
+        { watchedProducts: watchedProductsNewArray }
+>>>>>>> 4193248 (fix-limit-watchedProducts)
       );
     }
     res.status(200).send({
