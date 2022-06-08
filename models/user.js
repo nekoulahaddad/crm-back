@@ -8,10 +8,10 @@ const userSchema = new Schema(
   {
     firstName: { type: String, required: true },
     middleName: { type: String, required: false },
-    lastName: { type: String, required: true },
+    lastName: { type: String, required: false },
     displayID: { type: String, required: true },
     birthday: { type: Date, required: false, default: null },
-    phone: { type: String, required: true },
+    phone: { type: String, required: false },
     email: { type: String, required: true, unique: true },
     gender: {
       type: String,

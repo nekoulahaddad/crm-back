@@ -29,7 +29,7 @@ export const insertClient = async (req, res) => {
     user.role = userRole._id;
     user.city = userCity._id;
     user.displayID = displayID
-      ? ("0000000" + displayID.count).slice(-7)
+      ? ("0000000" + displayID.count).slice(-8)
       : "00000000";
     const newUser = new User(user);
     const newPassword = new Password({
@@ -64,7 +64,7 @@ export const insertAdmin = async (req, res) => {
     user.role = userRole._id;
     user.city = userCity._id;
     user.displayID = displayID
-      ? ("0000000" + displayID.count).slice(-7)
+      ? ("0000000" + displayID.count).slice(-8)
       : "00000000";
     const newUser = new User(user);
     const newPassword = new Password({
@@ -101,7 +101,7 @@ export const insertPartner = async (req, res) => {
     user.city = userCity._id;
     user.shop_id = shop._id;
     user.displayID = displayID
-      ? ("0000000" + displayID.count).slice(-7)
+      ? ("0000000" + displayID.count).slice(-8)
       : "00000000";
     const newUser = new User(user);
     const newPassword = new Password({
@@ -124,30 +124,39 @@ export const insertPartner = async (req, res) => {
 };
 
 export const addClient = async (req, res) => {
+  const { data } = req.body;
+  const session = await mongoose.startSession();
+  session.startTransaction();
   try {
-    const { data } = req.body;
-
+    const { email, password } = data;
+    const existedUser = await User.findOne({ email });
+    if (existedUser)
+      return res
+        .status(403)
+        .send({ status: "error", message: "этот пользователь уже существует" });
     const userRole = await Role.findOne({ value: "client" });
-    const newPassword = new Password({
-      //user_id: newUser._id,
-      password: "12345678",
-      email: data.email,
-    });
     const counter = await CustomID.findOneAndUpdate(
       { name: "clientsCounter" },
       { $inc: { count: 1 } },
-      { upsert: true }
+      { upsert: true, session: session, new: true }
     );
     const newClient = {
       ...data,
       role: userRole._id,
-      displayID: counter ? ("0000000" + counter.count).slice(-7) : "00000000",
+      displayID: counter ? ("0000000" + counter.count).slice(-8) : "00000000",
     };
-    const clients = await User.create(newClient);
-
+    const client = await User.create(newClient);
+    const newPassword = new Password({
+      user_id: client._id,
+      password: password,
+      email: client.email,
+    });
+    await newPassword.save();
+    await session.commitTransaction();
+    session.endSession();
     res.status(200).send({
       status: "ok",
-      message: clients,
+      message: client,
     });
   } catch (error) {
     res.status(500).send({
@@ -158,21 +167,39 @@ export const addClient = async (req, res) => {
 };
 
 export const addPartner = async (req, res) => {
+  const { data } = req.body;
+  const session = await mongoose.startSession();
+  session.startTransaction();
   try {
+    const { email, password } = data;
+    const existedUser = await User.findOne({ email });
+    if (existedUser)
+      return res
+        .status(403)
+        .send({ status: "error", message: "этот пользователь уже существует" });
+    const userRole = await Role.findOne({ value: "partner" });
     const counter = await CustomID.findOneAndUpdate(
-      { name: "clientsCounter" },
+      { name: "partnersCounter" },
       { $inc: { count: 1 } },
-      { upsert: true }
+      { upsert: true, session: session, new: true }
     );
     const newClient = {
-      ...usersData[0],
-      displayID: counter ? ("0000000" + counter.count).slice(-7) : "00000000",
+      ...data,
+      role: userRole._id,
+      displayID: counter ? ("0000000" + counter.count).slice(-8) : "00000000",
     };
-    const clients = await User.create(newClient);
-
+    const client = await User.create(newClient);
+    const newPassword = new Password({
+      user_id: client._id,
+      password: password,
+      email: client.email,
+    });
+    await newPassword.save();
+    await session.commitTransaction();
+    session.endSession();
     res.status(200).send({
       status: "ok",
-      message: clients,
+      message: client,
     });
   } catch (error) {
     res.status(500).send({
