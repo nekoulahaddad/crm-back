@@ -123,85 +123,59 @@ export const insertPartner = async (req, res) => {
   }
 };
 
-export const addClient = async (req, res) => {
+export const addUser = async (req, res) => {
+  const { userType } = req.query;
+  const userCounter =
+    userType === "client"
+      ? "clientsCounter"
+      : userType === "partner"
+      ? "partnersCounter"
+      : userType === "admin"
+      ? "adminsCounter"
+      : null;
   const { data } = req.body;
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
-    const { email, password } = data;
+    const { email, password, firstName } = data;
+    if (!userCounter) throw new Error("тип пользователя не верный");
+    if (!firstName || !password || !email) {
+      return res
+        .status(400)
+        .json({ status: "error", message: "пожалуйста заполните все поля" });
+    }
     const existedUser = await User.findOne({ email });
     if (existedUser)
       return res
         .status(403)
         .send({ status: "error", message: "этот пользователь уже существует" });
-    const userRole = await Role.findOne({ value: "client" });
+    const userRole = await Role.findOne({ value: userType });
     const counter = await CustomID.findOneAndUpdate(
-      { name: "clientsCounter" },
+      { name: userCounter },
       { $inc: { count: 1 } },
       { upsert: true, session: session, new: true }
     );
-    const newClient = {
+    const newUser = {
       ...data,
       role: userRole._id,
       displayID: counter ? ("0000000" + counter.count).slice(-8) : "00000000",
     };
-    const client = await User.create(newClient);
+    const user = await User.create(newUser);
     const newPassword = new Password({
-      user_id: client._id,
-      password: password,
-      email: client.email,
+      user_id: user._id,
+      password,
+      email,
     });
     await newPassword.save();
     await session.commitTransaction();
     session.endSession();
     res.status(200).send({
       status: "ok",
-      message: client,
+      message: user,
     });
   } catch (error) {
-    res.status(500).send({
-      status: "error",
-      message: error.message,
-    });
-  }
-};
-
-export const addPartner = async (req, res) => {
-  const { data } = req.body;
-  const session = await mongoose.startSession();
-  session.startTransaction();
-  try {
-    const { email, password } = data;
-    const existedUser = await User.findOne({ email });
-    if (existedUser)
-      return res
-        .status(403)
-        .send({ status: "error", message: "этот пользователь уже существует" });
-    const userRole = await Role.findOne({ value: "partner" });
-    const counter = await CustomID.findOneAndUpdate(
-      { name: "partnersCounter" },
-      { $inc: { count: 1 } },
-      { upsert: true, session: session, new: true }
-    );
-    const newClient = {
-      ...data,
-      role: userRole._id,
-      displayID: counter ? ("0000000" + counter.count).slice(-8) : "00000000",
-    };
-    const client = await User.create(newClient);
-    const newPassword = new Password({
-      user_id: client._id,
-      password: password,
-      email: client.email,
-    });
-    await newPassword.save();
-    await session.commitTransaction();
+    await session.abortTransaction();
     session.endSession();
-    res.status(200).send({
-      status: "ok",
-      message: client,
-    });
-  } catch (error) {
     res.status(500).send({
       status: "error",
       message: error.message,

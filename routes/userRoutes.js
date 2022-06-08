@@ -9,15 +9,13 @@ import {
   editUser,
   getUserById,
   deleteUser,
-  addClient,
-  addPartner,
+  addUser,
 } from "../controllers/userController.js";
 
 router.get("/insertClient", insertClient);
 router.get("/insertAdmin", insertAdmin);
 router.get("/insertPartner", insertPartner);
-router.post("/addPartner", addPartner);
-router.post("/addClient", addClient);
+router.post("/addUser", addUser);
 router.get("/all", getUsersByRole);
 router.get("/allByShop/:shopId", getClientsForOneShop);
 router.put("/edit/:id", editUser);
