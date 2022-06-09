@@ -73,6 +73,13 @@ export const getAllOrders = async (
       as: "order.shop",
     })
     .unwind("$order.shop")
+    .lookup({
+      from: "statusorders",
+      localField: "order.statusOrder",
+      foreignField: "_id",
+      as: "order.statusOrder",
+    })
+    .unwind("$order.statusOrder")
     .exec();
   return orders;
 };

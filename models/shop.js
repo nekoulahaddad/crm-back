@@ -4,6 +4,8 @@ const { Schema, Types, model } = mongoose;
 const shopSchema = new Schema(
   {
     name: { type: String, required: true },
+    contractNo: { type: String, required: true },
+    shopName: { type: String, required: true },
     subDomain: { type: String, required: false, unique: true },
     domain: { type: String, required: false },
     description: { type: String, required: true },
