@@ -112,19 +112,18 @@ export const getProductById = async (req, res) => {
     if (req.user) {
       const watchedProductsNewArray =
         req.user.watchedProducts.length > NUMBER_OF_WATCHED_PRODUCTS
-          ? req.user.watchedProducts.splice(
-              -NUMBER_OF_WATCHED_PRODUCTS,
-              NUMBER_OF_WATCHED_PRODUCTS
-            )
+          ? req.user.watchedProducts.splice(0, NUMBER_OF_WATCHED_PRODUCTS)
           : req.user.watchedProducts;
-      watchedProductsNewArray.push(product._id);
+      const filteredProductsArray = watchedProductsNewArray.filter(
+        (ele) => ele.toString() !== product._id.toString()
+      );
+      filteredProductsArray.unshift(product._id);
 
       await User.findOneAndUpdate(
         {
           _id: req.user._id,
-          watchedProducts: { $ne: product._id },
         },
-        { watchedProducts: watchedProductsNewArray }
+        { watchedProducts: filteredProductsArray }
       );
     }
     res.status(200).send({
