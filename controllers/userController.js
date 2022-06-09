@@ -318,7 +318,7 @@ export const deleteUser = async (req, res) => {
         message: "Пользователь не найден",
       });
     }
-    const userPassword = await Password.findById({ email: user.email });
+    const userPassword = await Password.findOne({ email: user.email });
     await user.remove();
     await userPassword.remove();
 
