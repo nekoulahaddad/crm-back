@@ -50,7 +50,7 @@ export const checkPartner = async (req, res, next) => {
 
 export const getUserInfo = async (req, res, next) => {
   try {
-    const token = req.headers["authorization"].split(" ")[1];
+    const token = req.headers["authorization"];
     if (!token) {
       return res.send({
         status: 403,
