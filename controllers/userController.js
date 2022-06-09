@@ -15,7 +15,7 @@ import {
   getAllUsers,
   getAllUsersForOneShop,
 } from "../aggregations/userAggregations";
-import {Product} from "../models/product";
+import { Product } from "../models/product";
 
 export const insertClient = async (req, res) => {
   const user = usersData[4];
@@ -190,8 +190,6 @@ export const getUsersByRole = async (req, res) => {
   RegExp.quote = function (str) {
     return str.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
   };
-  limit = 10;
-  page = 0;
   let users = {};
   try {
     users = await getAllUsers(
@@ -231,8 +229,6 @@ export const getClientsForOneShop = async (req, res) => {
   RegExp.quote = function (str) {
     return str.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
   };
-  limit = 6;
-  page = 0;
 
   const shopClientsArray = await Order.find({
     shop_id: Types.ObjectId(shopId),
@@ -355,4 +351,3 @@ export const getWatchedProducts = async (req, res) => {
     });
   }
 };
-
