@@ -70,15 +70,13 @@ export const getOrders = async (req, res) => {
   RegExp.quote = function (str) {
     return str.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
   };
-  limit = 10;
-  page = 0;
   let orders = {};
   try {
     orders = await getAllOrders(
       Order,
       sort_field,
       sort_direction,
-      limit,
+      parseInt(limit),
       page,
       searchTerm,
       false
@@ -121,21 +119,16 @@ export const getOrdersForOneShop = async (req, res) => {
       : null;
 
   let dateEnd = dateFilter === "month" ? currentMonthEnd : tomorrow;
-
-  limit = 10;
-  page = 0;
   RegExp.quote = function (str) {
     return str.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
   };
-  limit = 10;
-  page = 0;
   let orders = {};
   try {
     orders = await getAllOrdersForOneShop(
       Order,
       cityId,
       statusId,
-      limit,
+      parseInt(limit),
       page,
       searchTerm,
       shopId,
@@ -172,15 +165,13 @@ export const getOrdersForOneShop = async (req, res) => {
 export const getOrdersByClientId = async (req, res) => {
   let { page, sort_field, sort_direction, limit } = req.query;
   const { clientId } = req.params;
-  limit = 10;
-  page = 0;
   let orders = {};
   try {
     orders = await getAllOrders(
       Order,
       sort_field,
       sort_direction,
-      limit,
+      parseInt(limit),
       page,
       false,
       clientId

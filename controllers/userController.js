@@ -197,7 +197,7 @@ export const getUsersByRole = async (req, res) => {
       userRole,
       sort_field,
       sort_direction,
-      limit,
+      parseInt(limit),
       page,
       searchTerm
     );
@@ -238,7 +238,7 @@ export const getClientsForOneShop = async (req, res) => {
     let users = await getAllUsersForOneShop(
       User,
       userRole,
-      limit,
+      parseInt(limit),
       page,
       searchTerm,
       cityId,
