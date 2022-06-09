@@ -50,7 +50,7 @@ export const getAllUsers = async (
     .unwind("$country")
     .sort({ [sort_field]: sort_direction })
     .facet({
-      paginatedResults: [{ $skip: limit * page }, { $limit: limit }],
+      paginatedResults: [{ $skip: limit * page }, { $limit: 10 }],
       totalCount: [
         {
           $count: "count",
