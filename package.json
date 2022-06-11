@@ -28,6 +28,7 @@
     "dotenv": "^14.2.0",
     "esm": "^3.2.25",
     "express": "^4.17.3",
+    "express-validator": "^6.14.1",
     "fuse.js": "^6.5.3",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.2.6",
