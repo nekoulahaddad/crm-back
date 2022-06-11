@@ -11,14 +11,13 @@ export const getAllUsers = async (
   searchTerm
 ) => {
   let matchCriteria = {
-    $and: [{ "role.value": userRole }, { active: true }],
+    $and: [{ "role.value": userRole }],
   };
   if (searchTerm) {
     let regex = new RegExp(RegExp.quote(searchTerm), "gi");
     matchCriteria = {
       $and: [
         { "role.value": userRole },
-        { active: true },
         {
           $or: [{ firstName: regex }, { phone: regex }],
         },
@@ -73,7 +72,6 @@ export const getAllUsersForOneShop = async (
 ) => {
   let matchCriteria = [
     { "role.value": userRole },
-    { active: true },
     { _id: { $in: shopClientsArray } },
   ];
   if (searchTerm) {

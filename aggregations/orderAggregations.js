@@ -9,7 +9,7 @@ export const getAllOrders = async (
   searchTerm,
   clientId
 ) => {
-  let matchCriteria = [{ visible: true }];
+  let matchCriteria = [];
   if (searchTerm) {
     let regex = new RegExp(RegExp.quote(searchTerm), "gi");
     matchCriteria.push({ displayID: regex });
@@ -95,7 +95,7 @@ export const getAllOrdersForOneShop = async (
   dateFrom,
   dateEnd
 ) => {
-  let matchCriteria = [{ shop_id: Types.ObjectId(shopId) }, { visible: true }];
+  let matchCriteria = [{ shop_id: Types.ObjectId(shopId) }];
   if (searchTerm) {
     let regex = new RegExp(RegExp.quote(searchTerm), "gi");
     matchCriteria.push({ displayID: regex });
