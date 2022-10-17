@@ -6,7 +6,7 @@ export const getAllPartners = async (
   page,
   searchTerm
 ) => {
-  let matchCriteria = [{ visible: true }];
+  let matchCriteria = [];
   if (searchTerm) {
     let regex = new RegExp(RegExp.quote(searchTerm), "gi");
     matchCriteria.push({ name: regex });
