@@ -1,14 +1,6 @@
 export const getAllPartners = async (
   Shop,
-  sort_field,
-  sort_direction,
-  limit,
-  page,
-  searchTerm
-) => {
-  let matchCriteria = [{ visible: true }];
-  if (searchTerm) {
-    let regex = new RegExp(RegExp.quote(searchTerm), "gi");
+);
     matchCriteria.push({ name: regex });
   }
 
